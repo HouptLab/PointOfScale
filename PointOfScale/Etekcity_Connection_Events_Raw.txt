@@ -1,0 +1,78 @@
+Mar 07 08:39:41.705  HCI Event        0x0000  01:B3:A2:19:74:36  LE - Advertising Report - 1 Report - Normal - Public - 01:B3:A2:19:74:36  -80 dBm - Manufacturer Specific Data - Channel 39/38  
+Mar 07 08:39:41.706  HCI Event        0x0000  01:B3:A2:19:74:36  LE - Advertising Report - 1 Report - Normal - Public - 01:B3:A2:19:74:36  -80 dBm - Etekcity Nutrition Scale - Channel 39/38  
+Mar 07 08:39:41.724  HCI Command      0x0000  01:B3:A2:19:74:36  LE Add Device To White List - Public - 01:B3:A2:19:74:36  
+Mar 07 08:39:41.836  HCI Event        0x0000  01:B3:A2:19:74:36  LE - Advertising Report - 1 Report - Normal - Public - 01:B3:A2:19:74:36  -77 dBm - Manufacturer Specific Data - Channel 37  
+Mar 07 08:39:41.837  HCI Event        0x0041  01:B3:A2:19:74:36  LE - Enhanced Connection Complete - Master - Public - 01:B3:A2:19:74:36 local - 00:00:00:00:00:00 peer - 00:00:00:00:00:00 - Conn Interval: 30 ms  
+Mar 07 08:39:41.843  HCI Command      0x0000  01:B3:A2:19:74:36  LE Remove Device From White List - 0 - 01:B3:A2:19:74:36  
+Mar 07 08:39:41.853  HCI Command      0x0041  01:B3:A2:19:74:36  Read Remote Version Information - Connection Handle: 0x0041  
+Mar 07 08:39:41.904  HCI Event        0x0041  01:B3:A2:19:74:36  Read Remote Version Information Complete  
+Mar 07 08:39:41.917  ATT Send         0x0041  01:B3:A2:19:74:36  Exchange MTU Request - MTU: 185  
+Mar 07 08:39:41.964  ATT Receive      0x0041  01:B3:A2:19:74:36  Exchange MTU Response - MTU: 23  
+Mar 07 08:39:41.971  ATT Send         0x0041  01:B3:A2:19:74:36  Write Request - Handle:0x000E - Value: 0100   
+Mar 07 08:39:41.994  HCI Event        0x0041  01:B3:A2:19:74:36  Number Of Completed Packets - Handle: 0x0041 - Packets: 0x0002    
+Mar 07 08:39:42.024  ATT Receive      0x0041  01:B3:A2:19:74:36  Write Response  
+Mar 07 08:39:44.050  ATT Send         0x0041  01:B3:A2:19:74:36  Read By Type Request - Start Handle: 0x0001 - End Handle: 0x0005 - UUID: Device Name  
+Mar 07 08:39:44.095  ATT Receive      0x0041  01:B3:A2:19:74:36  Read By Type Response  
+Mar 07 08:39:44.099  ATT Send         0x0041  01:B3:A2:19:74:36  Read Blob Request  
+Mar 07 08:39:44.124  HCI Event        0x0041  01:B3:A2:19:74:36  Number Of Completed Packets - Handle: 0x0041 - Packets: 0x0002    
+Mar 07 08:39:44.154  ATT Receive      0x0041  01:B3:A2:19:74:36  Read Blob Response - Value: 5363 616C 65  
+Mar 07 08:39:44.394  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D101 00D2   
+Mar 07 08:39:44.424  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D301 01D5   
+Mar 07 08:39:44.484  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 E401 01E6   
+Mar 07 08:39:44.635  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D201 1DF0   
+Mar 07 08:39:44.724  L2CAP Receive    0x0041  01:B3:A2:19:74:36  Connection Parameter Update Request  
+Mar 07 08:39:44.724  HCI Command      0x0041  01:B3:A2:19:74:36  LE Connection Update - Connection Handle: 0x0041  
+Mar 07 08:39:44.725  L2CAP Send       0x0041  01:B3:A2:19:74:36  Connection Parameter Update Response  
+Mar 07 08:39:44.755  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D201 1DF0   
+Mar 07 08:39:44.904  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D201 1DF0   
+Mar 07 08:39:44.936  HCI Event        0x0041  01:B3:A2:19:74:36  LE - Connection Update Complete  
+Mar 07 08:39:44.945  HCI Event        0x0041  01:B3:A2:19:74:36  Number Of Completed Packets - Handle: 0x0041 - Packets: 0x0001    
+Mar 07 08:39:45.026  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D201 1DF0   
+Mar 07 08:39:45.116  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.296  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.416  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.596  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.686  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.776  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:45.956  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.076  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.226  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.346  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.436  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.616  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.736  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:46.886  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.006  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.096  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.276  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.396  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.546  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.666  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.786  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:47.936  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.056  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.206  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.356  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.416  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.596  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.716  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.866  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:48.986  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.076  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.256  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.376  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.526  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.646  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.796  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:49.916  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.036  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.216  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.306  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.426  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.576  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.696  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.846  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:50.966  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:51.086  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:51.236  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
+Mar 07 08:39:51.356  ATT Receive      0x0041  01:B3:A2:19:74:36  Handle Value Notification - Handle:0x000D - Value: FEEF C0A2 D005 0000 0000 01D6   
