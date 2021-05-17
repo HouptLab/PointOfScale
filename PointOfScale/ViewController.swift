@@ -15,6 +15,7 @@ import CoreBluetooth
 class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate {
 
     @IBOutlet weak var weightLabel: UILabel!
+    private var tareVal: Double = 0
 
     private var centralManager: CBCentralManager!
     private var peripheral: CBPeripheral!
@@ -173,14 +174,17 @@ func weightFromScaleValue( value: Data) -> Double {
     |  11  | 03    |   signal strength in dB as 1's complement                  |
          */
 
-        var weight : Double = Double(value[7]) * 256.0 + Double(value[8])
+        var weight = Double(value[7]) * 256.0 + Double(value[8])
         weight /= 10.0
-
+    weight = weight + Double(tareVal)
         weightLabel.text = String(format: "%.1f", weight)
         return weight
     }
 
-// --------------------------------------------------------------------- 
+    @IBAction func Tare(_ sender: Any) {
+        tareVal = 0 - Double(weightLabel.text!)!
+    }
+    // ---------------------------------------------------------------------
 // Handling discovery of characteristics
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {

@@ -280,6 +280,9 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                         <state key="normal" title="Tare"/>
+                                        <connections>
+                                            <action selector="Tare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CVu-DN-mvv"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="grams" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9qJ-3f-oE1">
                                         <rect key="frame" x="285.37499999999977" y="376" width="65.000000000000114" height="29.000000000000085"/>
