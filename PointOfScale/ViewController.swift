@@ -13,7 +13,9 @@ import UIKit
 import CoreBluetooth
 
 class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate {
-    
+
+    @IBOutlet weak var weightLabel: UILabel!
+
     private var centralManager: CBCentralManager!
     private var peripheral: CBPeripheral!
     private var discoveredPeripheral: CBPeripheral!
@@ -173,7 +175,8 @@ func weightFromScaleValue( value: Data) -> Double {
 
         var weight : Double = Double(value[7]) * 256.0 + Double(value[8])
         weight /= 10.0
-        
+
+        weightLabel.text = String(format: "%.1f", weight)
         return weight
     }
 
