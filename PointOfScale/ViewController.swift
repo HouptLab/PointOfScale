@@ -157,22 +157,27 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
     
 // --------------------------------------------------------------------- 
 
+/**
+    | index | value | description                                                |
+    | :--:  | :--:  | :----                                                      |
+    |  0    | FE    |   start of Handle Value:  FEEF C0A2 D005 0007 2600 0103    |
+    |  1    | EF    |                                                            |
+    |  2    | C0    |                                                            |
+    |  3    | A2    |                                                            |
+    |  4    | D0    |   packet type: D0 -> weight                                |
+    |  5    | 05    |   length of packet: 0x05 -> 5 bytes for weight             |
+    |  6    | 00    |   sign: 0x00 positive ; 0x01 negative                      |
+    |  7-8  | 0a 82 |   weight, big endian: 0x0a 0x82 --> 2690 --> 269.0 g       |
+    |  9    | 00    |   unit: 0x00(g),0x01(lboz),0x02(ml),0x03(floz),
+                             0x04(ml milk),0x05(floz milk),0x06(oz)              |
+    |  10   | 01    |   stable: 0x00 measuring; 0x01 settled                     |
+    |  11   | 03    |   signal strength in dB as 1's complement                  |
+*/
+
 func weightFromScaleValue( value: Data) -> Double {
         // value = {length = 12, bytes = 0xfeefc0a2d005000a82000162},
         
-        /*
-    |  0   | FE    |   start of Handle Value:  FEEF C0A2 D005 0007 2600 0103    |
-    |  1   | EF    |                                                            |
-    |  2   | C0    |                                                            |
-    |  3   | A2    |                                                            |
-    |  4   | D0    |   packet type: D0 -> weight                                |
-    |  5   | 05    |   length of packet: 0x05 -> 5 bytes for weight             |
-    |  6   | 00    |   sign: 0x00 positive ; 0x01 negative                      |
-    |  7-8 | 0a 82 |   weight, little endian: 0x0a 0x82 --> 2690 --> 269.0 g    |
-    |  9   | 00    |   unit: 0x00(g),0x01(lboz),0x02(ml),0x03(floz),0x04(ml milk),0x05(floz milk),0x06(oz) |
-    |  10  | 01    |   stable: 0x00 measuring; 0x01 settled                     |
-    |  11  | 03    |   signal strength in dB as 1's complement                  |
-         */
+
 
         var weight = Double(value[7]) * 256.0 + Double(value[8])
         weight /= 10.0
