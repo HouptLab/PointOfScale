@@ -15,7 +15,8 @@ import CoreBluetooth
 class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate {
 
     @IBOutlet weak var weightLabel: UILabel!
-    private var tareVal: Double = 0
+    private var tareVal: Double = 0 // applied to the weight to zero it
+    private var tareHelper: Double = 0 //used to make the tareVal
 
     private var centralManager: CBCentralManager!
     private var peripheral: CBPeripheral!
@@ -26,7 +27,7 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
     
     private var old_weight : Double = -32000 // initial prior weight reading
     
-    private var count : Int = 0 // number of times weight characteristic discovered
+    private var count : Int = 0 // number of times weight characteristic discovered//why do we care about this?
     
     
 // ---------------------------------------------------------------------
@@ -36,8 +37,16 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
         centralManager = CBCentralManager(delegate:self, queue:nil)
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+//        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+//
     } // viewDidLoad
+//
+//    @objc func update(){
+//        //don't call anyhting that will cuase a stack overflow
+//        //check if connected
+//        //get weight
+//        //apply weight to label
+//    }
     
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
@@ -168,21 +177,29 @@ func weightFromScaleValue( value: Data) -> Double {
     |  4   | D0    |   packet type: D0 -> weight                                |
     |  5   | 05    |   length of packet: 0x05 -> 5 bytes for weight             |
     |  6   | 00    |   sign: 0x00 positive ; 0x01 negative                      |
-    |  7-8 | 0a 82 |   weight, little endian: 0x0a 0x82 --> 2690 --> 269.0 g    |
+    |  7-8 | 0a 82 |   weight, big endian: 0x0a 0x82 --> 2690 --> 269.0 g    |
     |  9   | 00    |   unit: 0x00(g),0x01(lboz),0x02(ml),0x03(floz),0x04(ml milk),0x05(floz milk),0x06(oz) |
     |  10  | 01    |   stable: 0x00 measuring; 0x01 settled                     |
     |  11  | 03    |   signal strength in dB as 1's complement                  |
          */
-
+    if (value[4] == 0xD0 && value[5] == 0x05){
         var weight = Double(value[7]) * 256.0 + Double(value[8])
+        if (value[6] == 0x01){
+            weight = weight * -1
+        }
         weight /= 10.0
-    weight = weight + Double(tareVal)
-        weightLabel.text = String(format: "%.1f", weight)
         return weight
+    }
+    return -3200.0
+    }
+
+    func weightToScreen(input: Double){
+        let weight = input + Double(tareVal)
+        weightLabel.text = String(format: "%.1f", weight)
     }
 
     @IBAction func Tare(_ sender: Any) {
-        tareVal = 0 - Double(weightLabel.text!)!
+        tareVal = tareHelper
     }
     // ---------------------------------------------------------------------
 // Handling discovery of characteristics
@@ -201,13 +218,15 @@ func weightFromScaleValue( value: Data) -> Double {
                    
                     if (!weightChar!.isNotifying) {
                         print ("Weight NOT notifying")
+                        print(weightChar!)
                         peripheral.setNotifyValue(true, for: weightChar!)
                         
                     } else {
-                    
-                        let weight = weightFromScaleValue(value: Data(weightChar!.value!))
+                        let weight = weightFromScaleValue(value: Data(weightChar!.value ?? data))
+                        tareHelper = 0 - weight
+                        weightToScreen(input:weight)
                           //  if (self.count % 5000 == 0) {
-                        if (self.old_weight != weight) {                       
+                        if (self.old_weight != weight && weight != -3200.0) {
                             print ("9. ", self.count, "characteristic 2c12: ", weightChar!)
                             print ("old weight: ", self.old_weight, " new weight: ", weight)
                             self.old_weight = weight
