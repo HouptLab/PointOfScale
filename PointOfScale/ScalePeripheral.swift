@@ -79,10 +79,9 @@ class EtekcityScalePeripheral: NSObject {
     
 */
    public func weightFromScaleValue( value: Data) -> Double {
+        
         // value = {length = 12, bytes = 0xfeefc0a2d005000a82000162},
         
-
-
         var weight : Double = Double(value[7]) * 256.0 + Double(value[8])
         weight /= 10.0
         

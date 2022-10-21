@@ -12,9 +12,37 @@
 import UIKit
 import CoreBluetooth
 
-class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate {
 
-    @IBOutlet weak var weightLabel: UILabel!
+class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
+
+
+// links to UI
+        @IBOutlet weak var weightLabel: UILabel!
+    
+        @IBOutlet weak var dateLabel: UILabel!
+        
+        @IBOutlet weak var timeLabel: UILabel!
+
+        @IBOutlet weak var exptCodeLabel: UILabel!
+        
+        @IBOutlet weak var exptDescriptionLabel: UILabel!
+
+        @IBOutlet weak var subjectsCollection: UICollectionView!
+
+        @IBOutlet weak var currentSubjectLabel: UILabel!
+
+        @IBOutlet weak var switchWidth:UISegmentedControl!
+
+        @IBOutlet weak var acceptWeight:UIButton!
+        
+        @IBOutlet weak var averageLabel:UILabel!
+        
+        @IBOutlet weak var resetAverage:UIButton!
+
+static let k4AcrossSpacing:CGFloat = 36
+static let k5AcrossSpacing:CGFloat  = 24
+
+// handling scale weights
     private var tareVal: Double = 0 // applied to the weight to zero it
     private var tareHelper: Double = 0 //used to make the tareVal
 
@@ -25,9 +53,29 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
 
     private var data: Data!
     
-    private var old_weight : Double = -32000 // initial prior weight reading
+
     
     private var count : Int = 0 // number of times weight characteristic discovered//why do we care about this?
+    
+    private var num_readings: Double = 0
+    
+    private var cumulativeAverage: Double = 0
+    
+    private var currentWeight: (value:Double, stability: Bool ) = (-32000,false)
+    private var previousWeight :  (value:Double, stability:Bool )  = (-32000,false)
+    
+// handling time
+    
+    private var timeLabelTimer: Timer!
+    
+    private var dateFormatter: DateFormatter!
+    
+    private var timeFormatter: DateFormatter!
+    
+// handling subjects
+
+  var subjects:  [BartenderSubject] = []
+    private var currentSubject: BartenderSubject!
     
     
 // ---------------------------------------------------------------------
@@ -36,10 +84,49 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
         
         centralManager = CBCentralManager(delegate:self, queue:nil)
         super.viewDidLoad()
+        
+        // set up for periodically updating the date and time on the screen
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E, MMM d, yyyy"
+        timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "H:mm"
+        
+        timeLabelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dateTimeToScreen), userInfo: nil, repeats: true)
         // Do any additional setup after loading the view.
 //        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
 //
+
+        switchWidth.addTarget(self, action: #selector(updateWidth), for: .valueChanged)
+        
+        acceptWeight.addTarget(self, action: #selector(acceptCurrentWeight), for: .primaryActionTriggered)
+
+         resetAverage.addTarget(self, action: #selector(resetAverageWeight), for: .primaryActionTriggered) 
+
+        // set up subjects
+        for index in 1...30{
+            subjects.append(BartenderSubject(id: String(format: "DMF%02d",index), 
+                                             weight: -32000.0, 
+                                             initial_weight: 300.00,
+                                             indexPath:nil))}
+                                             
+                                             
+        // set up the collection view
+        
+        subjectsCollection.register(UINib(nibName: "SubjectCollectionViewCell", bundle: nil), //.main 
+                                    forCellWithReuseIdentifier: "subjectCell")
+
+
+
+        // initialize everything to nil or -32000
+        setCurrentSubject(theSubject: nil)
+
     } // viewDidLoad
+    
+    @objc func updateWidth(_ sender: UISegmentedControl?) {
+    
+        subjectsCollection.collectionViewLayout.invalidateLayout()
+     
+     }
 //
 //    @objc func update(){
 //        //don't call anyhting that will cuase a stack overflow
@@ -48,6 +135,21 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
 //        //apply weight to label
 //    }
     
+
+func resetWeights() {
+        currentWeight = (value:-32000,stability:false)
+        previousWeight = (value:-32000,stability:false)
+        num_readings = 0;
+        cumulativeAverage = -32000
+        weightToScreen(input:currentWeight)
+}
+
+@objc func resetAverageWeight(_ sender:UIButton?) {
+        num_readings = 0;
+        cumulativeAverage = -32000  
+        weightToScreen(input:currentWeight)
+}
+
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 // CBCentralManager Delegate Methods
@@ -183,7 +285,7 @@ class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDel
     |  11   | 03    |   signal strength in dB as 1's complement                  |
 */
 
-func weightFromScaleValue( value: Data) -> Double {
+func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
         // value = {length = 12, bytes = 0xfeefc0a2d005000a82000162},
         
         /*
@@ -199,20 +301,59 @@ func weightFromScaleValue( value: Data) -> Double {
     |  10  | 01    |   stable: 0x00 measuring; 0x01 settled                     |
     |  11  | 03    |   signal strength in dB as 1's complement                  |
          */
-    if (value[4] == 0xD0 && value[5] == 0x05){
+         
+    var stableReading = false
+    if (value[4] == 0xD0 && value[5] == 0x05 ){
         var weight = Double(value[7]) * 256.0 + Double(value[8])
+        
         if (value[6] == 0x01){
             weight = weight * -1
         }
         weight /= 10.0
-        return weight
+        
+        if (value[10] == 0x01) {
+            stableReading = true;
+        }
+        return (value: weight,stability: stableReading)
     }
-        return -3200.0
+    return (value: -32000.0,stability: stableReading)
 }
 
-    func weightToScreen(input: Double){
-        let weight = input + Double(tareVal)
-        weightLabel.text = String(format: "%.1f", weight)
+    func weightToScreen(input: (value: Double,stability: Bool)){
+        if (input.value == -32000.0) {
+            weightLabel.text = "––"
+            weightLabel.font = UIFont.systemFont(ofSize: 72)
+        }
+        else {
+            let weight = input.value + Double(tareVal)
+            weightLabel.text = String(format: "%.1f", weight)
+
+            if (input.stability) {
+                weightLabel.font = UIFont.boldSystemFont(ofSize: 108)
+            }
+            else {
+                weightLabel.font = UIFont.systemFont(ofSize: 72)
+            }
+            
+        }
+         if (cumulativeAverage == -32000.0) {
+            averageLabel.text = "––"
+            }
+        else {
+            averageLabel.text = String(format: "%.1f (%.0f)", cumulativeAverage,num_readings)
+        }
+    }
+    
+    @objc func acceptCurrentWeight(_ sender:UIButton) {
+        updateCurrentSubjectWeight(weight: currentWeight.value)
+        resetWeights()    
+        
+    }
+    
+    @objc  func dateTimeToScreen(_ sender: Timer?) {
+        let date = Date()
+        dateLabel.text = dateFormatter.string(from: date)        
+        timeLabel.text = timeFormatter.string(from: date)
     }
 
     @IBAction func Tare(_ sender: Any) {
@@ -239,23 +380,50 @@ func weightFromScaleValue( value: Data) -> Double {
                         peripheral.setNotifyValue(true, for: weightChar!)
                         
                     } else {
-                        let weight = weightFromScaleValue(value: Data(weightChar!.value ?? data))
-                        tareHelper = 0 - weight
-                        weightToScreen(input:weight)
+                        currentWeight = weightFromScaleValue(value: Data(weightChar!.value ?? data))
+                        tareHelper = 0 - currentWeight.value
+                                                
+                        
+                        
                           //  if (self.count % 5000 == 0) {
-                        if (self.old_weight != weight && weight != -3200.0) {
+                        if (previousWeight.value != currentWeight.value && currentWeight.value != -32000.0) {
                             print ("9. ", self.count, "characteristic 2c12: ", weightChar!)
-                            print ("old weight: ", self.old_weight, " new weight: ", weight)
-                            self.old_weight = weight
+                            print ("old weight: ", previousWeight.value, " new weight: ", currentWeight.value)
+                           
                             
                             // Display the weight
                             // Dispatch the text view update to the main queue for updating the UI, because
                             // we don't know which thread this method will be called back on.
                             //        DispatchQueue.main.async() {
                             //            self.textView.text = String(weight)
-                            //        }            
+                            //        } 
+                            
+                            if (currentWeight.value == -32000.0) {
+                                cumulativeAverage = currentWeight.value 
+                                num_readings = 1
+                            }
+                            else {
+                                cumulativeAverage = (currentWeight.value + num_readings * cumulativeAverage) / (num_readings + 1)
+                                num_readings = num_readings + 1
+                            }
+
+
+                            
+
+//                            num_readings = num_readings + 1
+//                            let a = 1/num_readings
+//                            let b = 1 - a
+//                            cumulativeAverage = a * weight.value + b * cumulativeAverage
+
+                             previousWeight = currentWeight
+                                       
                         }               
+                        
+                        weightToScreen(input:currentWeight)
+                        
                     } // weightChar is notifying
+                    
+                    
                      
                     self.count += 1
                      
@@ -314,5 +482,134 @@ func weightFromScaleValue( value: Data) -> Double {
         }
     } // peripheral didUpdateValueFor
     
-} // ViewController
+    
+// MARK: Handling Current Subject
 
+func setCurrentSubject(theSubject:BartenderSubject!) {
+
+    resetWeights()
+    
+    if (nil != theSubject) {
+    currentSubjectLabel.text = theSubject.id
+    
+    // TODO: save old subject data?
+    currentSubject = theSubject;
+    }
+    else {
+        currentSubjectLabel.text = "NONE"
+        currentSubject = nil;
+    }
+}
+
+func updateCurrentSubjectWeight(weight:Double) {
+
+    if (nil == currentSubject) {
+        return
+    }
+    
+    currentSubject.weight = weight
+    
+    let currentSubjectCell = subjectsCollection.cellForItem(at: currentSubject.indexPath) as! SubjectCollectionViewCell?
+     
+    currentSubjectCell?.setSubject(theSubject: currentSubject)
+    
+    subjectsCollection.deselectItem(at: currentSubject.indexPath, animated: true)
+    currentSubject = nil
+    
+    setCurrentSubject(theSubject:nil)
+      
+//    currentSubjectCell?.weightLabel.text = String(format: "%.1f", currentSubject.weight)
+//
+//    currentSubjectCell?.percentLabel.text = String(format: "%.0f/%", 100 * currentSubject.weight/currentSubject.initial_weight)
+//    
+//    if (currentSubject.weight < (currentSubject.initial_weight * 0.85)){
+//            currentSubjectCell?.percentLabel.textColor = UIColor.red
+//            currentSubjectCell?.percentLabel.font = UIFont.boldSystemFont(ofSize: 24.0)
+//    }
+//    else {
+//        currentSubjectCell?.percentLabel.textColor = UIColor.black
+//         currentSubjectCell?.percentLabel.font = UIFont.systemFont(ofSize: 16.0)
+//    }
+
+}
+
+// MARK: UICollectionViewDataSource
+
+//  // defaults to 1
+//   func numberOfSections(in: UICollectionView) -> Int {
+//    
+//        return 1
+//    
+//    }
+
+//https://stackoverflow.com/questions/47183879/xib-with-uicollectionview-not-key-value-coding-compliant
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    
+        return  subjects.count
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt: IndexPath) -> Bool {
+    
+        return false;
+    }
+
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+    let cell:SubjectCollectionViewCell = subjectsCollection.dequeueReusableCell(withReuseIdentifier: "subjectCell", for: indexPath) as! SubjectCollectionViewCell
+    
+    cell.setSubject(theSubject:subjects[indexPath.item])
+    
+    return cell
+   }
+   
+//   @IBAction  func selectSubject(_ sender: SubjectCollectionViewCell) {
+//        currentSubjectLabel.text = sender.nameLabel.text
+//    }
+    
+    // MARK: UICollectionVeiw Delegate methods
+    
+    func collectionView(_: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    // Asks the delegate if the specified item should be selected.
+        return true;
+    }
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    //  Tells the delegate that the item at the specified index path was selected.
+        let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
+        
+        cell.backgroundView?.backgroundColor = UIColor.lightGray
+        cell.subject.indexPath = indexPath
+        setCurrentSubject(theSubject: cell.subject)
+    }
+    func collectionView(_: UICollectionView, shouldDeselectItemAt: IndexPath) -> Bool {
+        // Asks the delegate if the specified item should be deselected.
+        return true
+    }
+    func collectionView(_: UICollectionView, didDeselectItemAt: IndexPath) {
+        //  Tells the delegate that the item at the specified path was deselected.
+    }
+    func collectionView(_: UICollectionView, shouldBeginMultipleSelectionInteractionAt: IndexPath) -> Bool {
+        return false
+        // Asks the delegate whether the user can select multiple items using a two-finger pan gesture in a collection view.
+    }
+
+// MARK: UICollectionViewLayout Delegate methods
+    
+func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    minimumInteritemSpacingForSectionAt section: Int
+) -> CGFloat {
+        
+        if (switchWidth.selectedSegmentIndex == 0) {
+            // 4 across
+           return 36.0
+        }
+        else {
+            // 5 across
+            return 24.0
+        }
+ }
+} // ViewController
