@@ -288,6 +288,7 @@ func resetWeights() {
 func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
         // value = {length = 12, bytes = 0xfeefc0a2d005000a82000162},
         
+
         /*
     |  0   | FE    |   start of Handle Value:  FEEF C0A2 D005 0007 2600 0103    |
     |  1   | EF    |                                                            |
@@ -304,6 +305,7 @@ func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
          
     var stableReading = false
     if (value[4] == 0xD0 && value[5] == 0x05 ){
+
         var weight = Double(value[7]) * 256.0 + Double(value[8])
         
         if (value[6] == 0x01){
