@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  WeightsViewController.swift
 //  PointOfScale
 //
 //  Created by Tom Houpt on 20/11/15.
@@ -11,11 +11,18 @@
 
 import UIKit
 import CoreBluetooth
+import FirebaseCore
+import FirebaseDatabase
+import FirebaseAuth
 
 
-class ViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
+let kMissingWeightValue : Double = -32000.0
+
+class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralManagerDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
 
 
+        var exptCode : String = "???"
+        
 // links to UI
         @IBOutlet weak var weightLabel: UILabel!
     
@@ -61,8 +68,8 @@ static let k5AcrossSpacing:CGFloat  = 24
     
     private var cumulativeAverage: Double = 0
     
-    private var currentWeight: (value:Double, stability: Bool ) = (-32000,false)
-    private var previousWeight :  (value:Double, stability:Bool )  = (-32000,false)
+    private var currentWeight: (value:Double, stability: Bool ) = (kMissingWeightValue,false)
+    private var previousWeight :  (value:Double, stability:Bool )  = (kMissingWeightValue,false)
     
 // handling time
     
@@ -77,6 +84,17 @@ static let k5AcrossSpacing:CGFloat  = 24
   var subjects:  [BartenderSubject] = []
     private var currentSubject: BartenderSubject!
     
+var numSubjects:UInt = 0
+
+var numSubjectsDownloaded:UInt = 0
+
+    
+// firebase
+
+var fbRef: DatabaseReference!
+
+    private var timeStampFormatter:  DateFormatter!
+     
     
 // ---------------------------------------------------------------------
     
@@ -91,6 +109,11 @@ static let k5AcrossSpacing:CGFloat  = 24
         timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "H:mm"
         
+        // timeStampFormatter for firebase key
+        timeStampFormatter = DateFormatter()
+        timeStampFormatter.dateFormat = "yyyy-MM-dd HH:mm"   
+        
+        
         timeLabelTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dateTimeToScreen), userInfo: nil, repeats: true)
         // Do any additional setup after loading the view.
 //        let timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(update), userInfo: nil, repeats: true)
@@ -102,24 +125,23 @@ static let k5AcrossSpacing:CGFloat  = 24
 
          resetAverage.addTarget(self, action: #selector(resetAverageWeight), for: .primaryActionTriggered) 
 
-        // set up subjects
-        for index in 1...30{
-            subjects.append(BartenderSubject(id: String(format: "DMF%02d",index), 
-                                             weight: -32000.0, 
-                                             initial_weight: 300.00,
-                                             indexPath:nil))}
-                                             
-                                             
+
+        exptCodeLabel.text = exptCode
+        
         // set up the collection view
         
         subjectsCollection.register(UINib(nibName: "SubjectCollectionViewCell", bundle: nil), //.main 
                                     forCellWithReuseIdentifier: "subjectCell")
-
-
-
-        // initialize everything to nil or -32000
-        setCurrentSubject(theSubject: nil)
-
+        
+        connectToFirebase()
+        getSubjectsFromFirebase()
+        
+      
+        // TODO: make sure we have gotten all the subjects before setting current subjects
+        
+        // initialize everything to nil or kMissingWeightValue
+        
+        
     } // viewDidLoad
     
     @objc func updateWidth(_ sender: UISegmentedControl?) {
@@ -137,22 +159,22 @@ static let k5AcrossSpacing:CGFloat  = 24
     
 
 func resetWeights() {
-        currentWeight = (value:-32000,stability:false)
-        previousWeight = (value:-32000,stability:false)
+        currentWeight = (value:kMissingWeightValue,stability:false)
+        previousWeight = (value:kMissingWeightValue,stability:false)
         num_readings = 0;
-        cumulativeAverage = -32000
+        cumulativeAverage = kMissingWeightValue
         weightToScreen(input:currentWeight)
 }
 
 @objc func resetAverageWeight(_ sender:UIButton?) {
         num_readings = 0;
-        cumulativeAverage = -32000  
+        cumulativeAverage = kMissingWeightValue  
         weightToScreen(input:currentWeight)
 }
 
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
-// CBCentralManager Delegate Methods
+// MARK: CBCentralManager Delegate Methods
         
 // ---------------------------------------------------------------------
 // If we're powered on, start scanning
@@ -318,11 +340,11 @@ func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
         }
         return (value: weight,stability: stableReading)
     }
-    return (value: -32000.0,stability: stableReading)
+    return (value: kMissingWeightValue,stability: stableReading)
 }
 
     func weightToScreen(input: (value: Double,stability: Bool)){
-        if (input.value == -32000.0) {
+        if (input.value == kMissingWeightValue) {
             weightLabel.text = "––"
             weightLabel.font = UIFont.systemFont(ofSize: 72)
         }
@@ -338,7 +360,7 @@ func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
             }
             
         }
-         if (cumulativeAverage == -32000.0) {
+         if (cumulativeAverage == kMissingWeightValue) {
             averageLabel.text = "––"
             }
         else {
@@ -388,7 +410,7 @@ func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
                         
                         
                           //  if (self.count % 5000 == 0) {
-                        if (previousWeight.value != currentWeight.value && currentWeight.value != -32000.0) {
+                        if (previousWeight.value != currentWeight.value && currentWeight.value != kMissingWeightValue) {
                             print ("9. ", self.count, "characteristic 2c12: ", weightChar!)
                             print ("old weight: ", previousWeight.value, " new weight: ", currentWeight.value)
                            
@@ -400,7 +422,7 @@ func weightFromScaleValue( value: Data) -> (value: Double, stability: Bool) {
                             //            self.textView.text = String(weight)
                             //        } 
                             
-                            if (currentWeight.value == -32000.0) {
+                            if (currentWeight.value == kMissingWeightValue) {
                                 cumulativeAverage = currentWeight.value 
                                 num_readings = 1
                             }
@@ -503,6 +525,175 @@ func setCurrentSubject(theSubject:BartenderSubject!) {
     }
 }
 
+func connectToFirebase() {
+
+    fbRef = Database.database(url: "https://bartenderdata.firebaseio.com" ).reference()
+    // https://bartenderdata.firebaseio.com
+    print("firebase")
+}
+
+func getFirebaseSubjectsDataPath(subjectID:String) -> String {
+
+    let subjectsPath = getFirebaseSubjectsPath()
+    
+    let dataPath = subjectsPath + "/" + subjectID + "/data"
+     
+    return dataPath
+
+}
+func getFirebaseSubjectsPath() -> String {
+
+    let subjectsPath = "expts/" + exptCodeLabel.text! + "/subjects"
+     
+    return subjectsPath
+
+}
+
+func getSubjectsFromFirebase() {
+
+    subjects.removeAll()
+    numSubjectsDownloaded = 0
+
+    let subjectsPath = getFirebaseSubjectsPath() 
+        
+    fbRef.child(subjectsPath).getData(completion:  { [self] error, snapshot in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return;
+            }
+             if (nil == snapshot ||  snapshot?.value is NSNull ) {
+             
+                // no subjects found
+                // TODO: post some error that can't find subjects
+             }
+             else {
+                self.numSubjects = snapshot!.childrenCount
+                // set up subjects
+                for index in 0..<self.numSubjects {
+            
+                    let subjectID = String(format: "%@%02d",exptCode,(index + 1))
+                    let theSubject = BartenderSubject(id: subjectID, 
+                                                 weight: kMissingWeightValue, 
+                                                 first_weight: kMissingWeightValue, 
+                                                 last_weight: kMissingWeightValue, 
+                                                 initial_weight: 300.00,
+                                                 indexPath:nil)
+                                                 
+                    subjects.append(theSubject)
+                    getSubjectWeightsFromFirebase(subjectID:subjectID,subjectIndex:Int(index)) 
+                 }
+                 
+                 // TODO: call this after numSubjectsDownloaded == numSubjects
+                 setCurrentSubject(theSubject: subjects[0])
+                 
+            }
+        })
+        
+        // TODO: is there a way to monitor self.numSubjectsDownloaded, and when it reaches self.numSubjects
+        // then call self.subjectsCollection.reloadData()
+}
+
+func getSubjectWeightsFromFirebase(subjectID:String,subjectIndex:Int) {
+
+    let dataPath = getFirebaseSubjectsDataPath(subjectID:subjectID)
+    
+//    let initialBodyWeightPath = dataPath + "/_initial_body_weight"
+//    
+//    
+//    fbRef.child(initialBodyWeightPath).getData(completion:  { [self] error, snapshot in
+//            guard error == nil else {
+//                print(error!.localizedDescription)
+//                return;
+//            }
+//            var initialBodyWeight = kMissingWeightValue;
+//            if (nil == snapshot ||  snapshot?.value is NSNull ) {
+//                // there is no initial body weight yet
+//                // we'll need to set it when we save weight
+//                print("No initialbodyweight set")
+//            }
+//            else {
+//                let initialBodyWeightNumber = snapshot?.value as! NSNumber
+//                initialBodyWeight = initialBodyWeightNumber.doubleValue
+//                print("initialBodyWeightString: ",initialBodyWeight)
+//            }
+//            self.subjects[subjectIndex].initial_weight = initialBodyWeight;
+//            
+//
+//    });
+//    
+    let bodyWeightPath = dataPath + "/Body Weight"
+    
+    fbRef.child(bodyWeightPath).getData(completion:  { [self] error, snapshot in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return;
+            }
+
+            let timestampedWeights =  snapshot?.value as! [String: NSNumber]
+        
+//            for (timestamp,weight) in timestampedWeights {
+//                print(timestamp,weight)
+//            }
+            // TODO: sort weights based on timestamps, get the last value
+            let sortedDates = Array(timestampedWeights.keys).sorted(by:<)
+            let first_weight_number =  timestampedWeights[sortedDates[0]]
+            let last_weight_number =  timestampedWeights[sortedDates[sortedDates.count - 1]]
+            self.subjects[subjectIndex].first_weight = first_weight_number?.doubleValue ?? kMissingWeightValue
+            self.subjects[subjectIndex].last_weight = last_weight_number?.doubleValue ?? kMissingWeightValue
+            
+            self.subjects[subjectIndex].initial_weight = self.subjects[subjectIndex].first_weight
+            
+            print(subjectIndex, " ", self.subjects[subjectIndex].first_weight, " - ", self.subjects[subjectIndex].last_weight)
+            
+            self.numSubjectsDownloaded = self.numSubjectsDownloaded + 1
+            
+            self.subjectsCollection.reloadData()
+            
+    });
+
+}
+
+func saveCurrentSubjectToFirebase() {
+/*
+expts/<expt_code>/subjects/<subject_code>/data/"Body Weight"/"YYYY-MM-DD HH:mm"/<weight-as-float>
+
+ expts/<expt_code>/subjects/<subject_code>/data/"_initial_body_weight"
+ store initial body weight here, so we can easily calculate current % of initial body weight
+
+ expts/<expt_code>/Measures/"Body Weight"/"Body Weight (g)"
+ 
+ */
+ 
+    let dataPath = getFirebaseSubjectsDataPath(subjectID: currentSubject.id ) 
+ 
+    let bodyWeightPath = dataPath + "/Body Weight"
+    
+    let timeStamp =  timeStampFormatter.string(from: Date())
+    
+    let timeStampPath = bodyWeightPath + "/" + timeStamp
+ 
+    fbRef.child(timeStampPath).setValue(currentSubject.weight)
+    
+    // check for  expts/<expt_code>/subjects/<subject_code>/data/"_initial_body_weight"
+    // if NOT present, then write current weight as _initial_body_weight
+    // OR JUST USE FIRST WEIGHT AS INITIAL WEIGHT
+
+//   let initialBodyWeightPath = dataPath + "/_initial_body_weight"
+//    fbRef.child(initialBodyWeightPath).getData(completion:  { [self] error, snapshot in
+//            guard error == nil else {
+//                print(error!.localizedDescription)
+//                return;
+//            }
+//            
+//            if (nil == snapshot ||  snapshot?.value is NSNull ) {
+//                self.currentSubject.initial_weight = self.currentSubject.weight
+//                fbRef.child(initialBodyWeightPath).setValue( self.currentSubject.initial_weight )
+//            }
+//    });
+
+
+}
+
 func updateCurrentSubjectWeight(weight:Double) {
 
     if (nil == currentSubject) {
@@ -510,6 +701,8 @@ func updateCurrentSubjectWeight(weight:Double) {
     }
     
     currentSubject.weight = weight
+    
+    saveCurrentSubjectToFirebase()
     
     let currentSubjectCell = subjectsCollection.cellForItem(at: currentSubject.indexPath) as! SubjectCollectionViewCell?
      
@@ -548,7 +741,7 @@ func updateCurrentSubjectWeight(weight:Double) {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     
-        return  subjects.count
+        return  Int(numSubjectsDownloaded) // subjects.count
         
     }
     
@@ -560,9 +753,9 @@ func updateCurrentSubjectWeight(weight:Double) {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-    let cell:SubjectCollectionViewCell = subjectsCollection.dequeueReusableCell(withReuseIdentifier: "subjectCell", for: indexPath) as! SubjectCollectionViewCell
+        let cell:SubjectCollectionViewCell = subjectsCollection.dequeueReusableCell(withReuseIdentifier: "subjectCell", for: indexPath) as! SubjectCollectionViewCell
     
-    cell.setSubject(theSubject:subjects[indexPath.item])
+        cell.setSubject(theSubject:subjects[indexPath.item])
     
     return cell
    }
@@ -614,4 +807,25 @@ func collectionView(
             return 24.0
         }
  }
+ 
+ // MARK: Prepare for segue
+ 
+ func setExptCode(code:String) {
+ 
+    exptCode = code
+    
+    // TODO: refresh connection to firebase
+    
+ }
+ 
+ 
+ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+ 
+        // TODO: finished weighing, so clean up i.e. make sure saved to firebase, timestamped 
+        if let selectExperimentController = segue.destination as? SelectExperiment {
+
+           
+        }
+    }
+    
 } // ViewController

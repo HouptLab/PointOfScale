@@ -11,10 +11,19 @@ struct BartenderSubject : Identifiable {
 
     var id: String
     
-    var weight: Double
+    var weight: Double 
+    
+    var first_weight: Double
+    
+    var last_weight: Double
     
     var initial_weight: Double
     
+/*
+    var data: [String:Any?] // dictonary of measures keyed by measure name; values are dictionary of measurements keyed by measurement date/time
+    
+    var group: String // each subject belongs to an experimental group, or is "Unassigned"
+*/
     var indexPath: IndexPath!
 
 }

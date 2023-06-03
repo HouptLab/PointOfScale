@@ -49,13 +49,29 @@ class SubjectCollectionViewCell: UICollectionViewCell {
             percentLabel.text = String(format:"%.0lf%%",100 * subject.weight/subject.initial_weight)
             
             weightLabel.textColor = UIColor.black
+            weightLabel.font = UIFont.systemFont(ofSize: 28.0)
             if (subject.weight < (subject.initial_weight * 0.85)){
                 percentLabel.textColor = UIColor.red
-                percentLabel.font = UIFont.boldSystemFont(ofSize: 24.0)
+                percentLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
             }
             else {
                 percentLabel.textColor = UIColor.black
                 percentLabel.font = UIFont.systemFont(ofSize: 16.0)
+            }
+        }
+        else if (-32000.0 != subject.last_weight) {
+            weightLabel.text = String(format:"%.1lf",subject.last_weight)
+            percentLabel.text = String(format:"%.0lf%%",100 * subject.last_weight/subject.initial_weight)
+            
+            weightLabel.textColor = UIColor.gray
+             weightLabel.font = UIFont.italicSystemFont(ofSize: 28.0)
+            if (subject.last_weight < (subject.initial_weight * 0.85)){
+                percentLabel.textColor = UIColor.systemPink
+                percentLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
+            }
+            else {
+                percentLabel.textColor = UIColor.gray
+                percentLabel.font = UIFont.italicSystemFont(ofSize: 16.0)
             }
         }
         else {
