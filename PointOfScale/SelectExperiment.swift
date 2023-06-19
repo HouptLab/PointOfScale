@@ -163,7 +163,7 @@ func getCurrentExperimentsFromFirebase() {
                     
                      let snapshotUpdated =  dict["last_updated"] as! String
                      
-                     let snapshotArchived =  dict["archived"] as? String
+                     let snapshotArchived =  dict["archived"] as? [String:String]
                     
                     if (nil == snapshotArchived) {
                         expts.append(BartenderExpt(archived: nil, id:snapshotExptCode, name: snapshotName, last_updated: snapshotUpdated ))

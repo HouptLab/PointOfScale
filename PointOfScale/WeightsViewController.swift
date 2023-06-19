@@ -107,7 +107,7 @@ var fbRef: DatabaseReference!
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "E, MMM d, yyyy"
         timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "H:mm"
+        timeFormatter.dateFormat = "HH:mm"
         
         // timeStampFormatter for firebase key
         timeStampFormatter = DateFormatter()
@@ -577,7 +577,7 @@ func getSubjectsFromFirebase() {
                                                  first_weight: kMissingWeightValue, 
                                                  last_weight: kMissingWeightValue, 
                                                  initial_weight: 300.00,
-                                                 indexPath:nil)
+                                                      indexPath:IndexPath(row: Int(index), section: 0))
                                                  
                     subjects.append(theSubject)
                     getSubjectWeightsFromFirebase(subjectID:subjectID,subjectIndex:Int(index)) 
@@ -629,6 +629,8 @@ func getSubjectWeightsFromFirebase(subjectID:String,subjectIndex:Int) {
                 return;
             }
 
+        if ((snapshot?.exists())!) {
+            
             let timestampedWeights =  snapshot?.value as! [String: NSNumber]
         
 //            for (timestamp,weight) in timestampedWeights {
@@ -644,6 +646,12 @@ func getSubjectWeightsFromFirebase(subjectID:String,subjectIndex:Int) {
             self.subjects[subjectIndex].initial_weight = self.subjects[subjectIndex].first_weight
             
             print(subjectIndex, " ", self.subjects[subjectIndex].first_weight, " - ", self.subjects[subjectIndex].last_weight)
+            
+            }
+            else {
+            
+                    print("no weights yet for ",subjectID);
+            }
             
             self.numSubjectsDownloaded = self.numSubjectsDownloaded + 1
             
@@ -663,6 +671,9 @@ expts/<expt_code>/subjects/<subject_code>/data/"Body Weight"/"YYYY-MM-DD HH:mm"/
  expts/<expt_code>/Measures/"Body Weight"/"Body Weight (g)"
  
  */
+ 
+ // TODO: cache results on firebase until we are done weighing everyone, then put into final data structure,
+ // and update group means and update "last_updated field on firebase 
  
     let dataPath = getFirebaseSubjectsDataPath(subjectID: currentSubject.id ) 
  
@@ -822,6 +833,8 @@ func collectionView(
  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
  
         // TODO: finished weighing, so clean up i.e. make sure saved to firebase, timestamped 
+         // TODO: cache results on firebase until we are done weighing everyone, then put into final data structure,
+        // TODO: and update group means and update "last_updated field on firebase 
         if let selectExperimentController = segue.destination as? SelectExperiment {
 
            
