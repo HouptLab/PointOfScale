@@ -10,6 +10,7 @@ import CoreBluetooth
 import FirebaseCore
 import FirebaseDatabase
 import FirebaseAuth
+import SafariServices
 
 /*
 1 ask firebase for list of experiments 
@@ -28,6 +29,8 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
         @IBOutlet weak var exptDescriptionLabel: UITextView!
         
         @IBOutlet weak var startWeighing:UIButton!
+        
+        @IBOutlet weak var viewExptData:UIButton!
         
         @IBOutlet weak var tableController:UITableViewController!
         
@@ -111,6 +114,7 @@ var fbRef: DatabaseReference!
         exptDescriptionLabel.text =  self.expts[indexPath.row].name
         
         startWeighing.isEnabled = true
+        viewExptData.isEnabled = true
     }
     
     
@@ -186,6 +190,22 @@ func getCurrentExperimentsFromFirebase() {
         
             // TODO: pass in experiment description, or can weightsViewController get that from firebase too?
         }
+    }
+    
+    @IBAction func showExptInSafari() {
+    
+    let code = exptCodeField.text
+            // TODO: validate exptCode to make sure it's one of our firebase experiments
+            
+        if (nil == code || 0 == code?.count) {
+            return
+        }
+
+        let urlString:String = "https://www.houptlab.org/bartab/expt/?id=" + code!;
+        let url : URL = URL(string:urlString)!
+        let svc = SFSafariViewController(url: url)
+        present(svc, animated: true, completion: nil)
+    
     }
 }
 

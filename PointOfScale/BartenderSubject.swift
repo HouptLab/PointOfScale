@@ -19,6 +19,8 @@ struct BartenderSubject : Identifiable {
     
     var initial_weight: Double
     
+    var group: String
+    
 /*
     var data: [String:Any?] // dictonary of measures keyed by measure name; values are dictionary of measurements keyed by measurement date/time
     

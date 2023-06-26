@@ -11,6 +11,7 @@
 		206557CC28F998EE003C54F0 /* SubjectCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 206557CA28F998EE003C54F0 /* SubjectCollectionViewCell.swift */; };
 		206557CD28F998EE003C54F0 /* SubjectCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 206557CB28F998EE003C54F0 /* SubjectCollectionViewCell.xib */; };
 		206C9778295A1EAA00FB0678 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 206C9777295A1EAA00FB0678 /* GoogleService-Info.plist */; };
+		207793EC2A4869290012EE04 /* BartenderGroupMean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207793EB2A4869290012EE04 /* BartenderGroupMean.swift */; };
 		2077FC3B28F8566800E6A8EB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3A28F8566800E6A8EB /* FirebaseAuth */; };
 		2077FC3D28F8566800E6A8EB /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3C28F8566800E6A8EB /* FirebaseDatabaseSwift */; };
 		2077FC3F28F8566800E6A8EB /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3E28F8566800E6A8EB /* FirebaseFunctions */; };
@@ -51,6 +52,7 @@
 		206557CA28F998EE003C54F0 /* SubjectCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectCollectionViewCell.swift; sourceTree = "<group>"; };
 		206557CB28F998EE003C54F0 /* SubjectCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SubjectCollectionViewCell.xib; sourceTree = "<group>"; };
 		206C9777295A1EAA00FB0678 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		207793EB2A4869290012EE04 /* BartenderGroupMean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BartenderGroupMean.swift; sourceTree = "<group>"; };
 		20D342AF28F9E5FE00889B67 /* SubjectCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectCollectionView.swift; sourceTree = "<group>"; };
 		20F2528C2561F7F500E52141 /* PointOfScale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PointOfScale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20F2528F2561F7F500E52141 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				20F252912561F7F500E52141 /* SceneDelegate.swift */,
 				20F252932561F7F500E52141 /* WeightsViewController.swift */,
 				206557C628F994A2003C54F0 /* BartenderSubject.swift */,
+				207793EB2A4869290012EE04 /* BartenderGroupMean.swift */,
 				20F9B83A2A1FAA190092E110 /* BartenderExpt.swift */,
 				20D342AF28F9E5FE00889B67 /* SubjectCollectionView.swift */,
 				206557CA28F998EE003C54F0 /* SubjectCollectionViewCell.swift */,
@@ -317,6 +320,7 @@
 				206557CC28F998EE003C54F0 /* SubjectCollectionViewCell.swift in Sources */,
 				20F252942561F7F500E52141 /* WeightsViewController.swift in Sources */,
 				20F9B83B2A1FAA190092E110 /* BartenderExpt.swift in Sources */,
+				207793EC2A4869290012EE04 /* BartenderGroupMean.swift in Sources */,
 				20F252902561F7F500E52141 /* AppDelegate.swift in Sources */,
 				20D342B028F9E5FE00889B67 /* SubjectCollectionView.swift in Sources */,
 				20F252922561F7F500E52141 /* SceneDelegate.swift in Sources */,

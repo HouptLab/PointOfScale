@@ -55,22 +55,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B414FD0A-5182-45B4-B821-CF370F8183FF"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PointOfScale/WeightsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
-            landmarkName = "updateWidth(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "FF90BAA2-2FC5-450E-B3E4-CA1596841481"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -78,9 +62,9 @@
             filePath = "PointOfScale/WeightsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "686"
-            endingLineNumber = "686"
-            landmarkName = "saveCurrentSubjectToFirebase()"
+            startingLineNumber = "691"
+            endingLineNumber = "691"
+            landmarkName = "saveSubjectToFirebase(theSubject:timeStamp:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -113,6 +97,36 @@
                   endingLineNumber = "686"
                   offsetFromSymbolStart = "1184">
                </Location>
+               <Location
+                  uuid = "FF90BAA2-2FC5-450E-B3E4-CA1596841481 - 148183e8afdc1d39"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.saveSubjectToFirebase(theSubject: PointOfScale.BartenderSubject, timeStamp: Swift.String) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "690"
+                  endingLineNumber = "690"
+                  offsetFromSymbolStart = "544">
+               </Location>
+               <Location
+                  uuid = "FF90BAA2-2FC5-450E-B3E4-CA1596841481 - 148183e8afdc1dd8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.saveSubjectToFirebase(theSubject: PointOfScale.BartenderSubject, timeStamp: Swift.String) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "691"
+                  endingLineNumber = "691"
+                  offsetFromSymbolStart = "544">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -126,8 +140,8 @@
             filePath = "PointOfScale/WeightsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "718"
-            endingLineNumber = "718"
+            startingLineNumber = "705"
+            endingLineNumber = "705"
             landmarkName = "updateCurrentSubjectWeight(weight:)"
             landmarkType = "7">
             <Locations>
@@ -175,6 +189,114 @@
                   startingLineNumber = "718"
                   endingLineNumber = "718"
                   offsetFromSymbolStart = "1688">
+               </Location>
+               <Location
+                  uuid = "C3AD5D4E-8886-45F3-BEBD-8EDF362FA6F4 - dbab5bafa34e00d2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.updateCurrentSubjectWeight(weight: Swift.Double) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "704"
+                  endingLineNumber = "704"
+                  offsetFromSymbolStart = "580">
+               </Location>
+               <Location
+                  uuid = "C3AD5D4E-8886-45F3-BEBD-8EDF362FA6F4 - dbab5bafa34e00d2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.updateCurrentSubjectWeight(weight: Swift.Double) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "704"
+                  endingLineNumber = "704"
+                  offsetFromSymbolStart = "1252">
+               </Location>
+               <Location
+                  uuid = "C3AD5D4E-8886-45F3-BEBD-8EDF362FA6F4 - dbab5bafa34e00b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.updateCurrentSubjectWeight(weight: Swift.Double) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "705"
+                  endingLineNumber = "705"
+                  offsetFromSymbolStart = "580">
+               </Location>
+               <Location
+                  uuid = "C3AD5D4E-8886-45F3-BEBD-8EDF362FA6F4 - dbab5bafa34e00b3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.updateCurrentSubjectWeight(weight: Swift.Double) -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "705"
+                  endingLineNumber = "705"
+                  offsetFromSymbolStart = "1252">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "62542045-F797-4425-ACA1-3D7B870A59F9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PointOfScale/WeightsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "891"
+            endingLineNumber = "891"
+            landmarkName = "testGroupMeans()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "62542045-F797-4425-ACA1-3D7B870A59F9 - 9b644261e19ed723"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.testGroupMeans() -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "892"
+                  endingLineNumber = "892"
+                  offsetFromSymbolStart = "5163">
+               </Location>
+               <Location
+                  uuid = "62542045-F797-4425-ACA1-3D7B870A59F9 - 9b644261e19ed704"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PointOfScale.WeightsViewController.testGroupMeans() -&gt; ()"
+                  moduleName = "PointOfScale"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "891"
+                  endingLineNumber = "891"
+                  offsetFromSymbolStart = "4956">
                </Location>
             </Locations>
          </BreakpointContent>
