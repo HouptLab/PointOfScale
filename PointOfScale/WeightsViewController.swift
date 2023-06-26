@@ -46,6 +46,9 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     @IBOutlet weak var resetAverage:UIButton!
     
+    @IBOutlet weak var cancelWeighing:UIButton!
+    
+    
     static let k4AcrossSpacing:CGFloat = 36
     static let k5AcrossSpacing:CGFloat  = 24
     
@@ -130,6 +133,10 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
      //   testGroupMeans()
         
         exptCodeLabel.text = exptCode
+        
+        // no subject selected, so show weight in red
+        weightLabel.textColor = UIColor.red
+        acceptWeight.isEnabled = false
         
         // set up the collection view
         
@@ -707,6 +714,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         currentSubjectCell?.setSubject(theSubject: currentSubject)
         
         subjectsCollection.deselectItem(at: currentSubject.indexPath, animated: true)
+        subjectsCollection.delegate?.collectionView?(subjectsCollection, didDeselectItemAt: currentSubject.indexPath)
         currentSubject = nil
         
         setCurrentSubject(theSubject:nil)
@@ -762,6 +770,8 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         cell.backgroundView?.backgroundColor = UIColor.lightGray
         cell.subject.indexPath = indexPath
         setCurrentSubject(theSubject: cell.subject)
+         weightLabel.textColor = UIColor.white
+         acceptWeight.isEnabled = true
     }
     func collectionView(_: UICollectionView, shouldDeselectItemAt: IndexPath) -> Bool {
         // Asks the delegate if the specified item should be deselected.
@@ -769,6 +779,10 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     }
     func collectionView(_: UICollectionView, didDeselectItemAt: IndexPath) {
         //  Tells the delegate that the item at the specified path was deselected.
+        
+        weightLabel.textColor = UIColor.red
+        acceptWeight.isEnabled = false
+        
     }
     func collectionView(_: UICollectionView, shouldBeginMultipleSelectionInteractionAt: IndexPath) -> Bool {
         return false
@@ -916,6 +930,11 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    
+        let senderButton = sender as! UIButton
+        if senderButton == cancelWeighing {
+            return
+        }
         
         // TODO: finished weighing, so clean up i.e. make sure saved to firebase, timestamped 
         // TODO: cache results on firebase until we are done weighing everyone, then put into final data structure,
@@ -930,7 +949,8 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             updateGroupMeans(timeStamp:timeStamp);
             
             
-            var updatedFormatter: DateFormatter! 
+            var updatedFormatter = DateFormatter()
+ 
             
             updatedFormatter.dateFormat = "E yyyy-MM-dd HH:mm"   
             

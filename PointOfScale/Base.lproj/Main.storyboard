@@ -71,15 +71,6 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                         <state key="normal" title="Accept Weight"/>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zBa-xL-omV">
-                                        <rect key="frame" x="305" y="599" width="79" height="55"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="36"/>
-                                        <state key="normal" title="Tare"/>
-                                        <connections>
-                                            <action selector="Tare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CVu-DN-mvv"/>
-                                        </connections>
-                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="grams" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9qJ-3f-oE1">
                                         <rect key="frame" x="320" y="378" width="65" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
@@ -100,13 +91,21 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CFH-Tr-WMP">
+                                        <rect key="frame" x="228" y="623" width="154" height="55"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <segue destination="wXn-0n-v9N" kind="show" id="fhQ-gQ-dHF"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K8t-Cb-z7F">
-                                        <rect key="frame" x="88" y="715" width="308" height="57"/>
+                                        <rect key="frame" x="91" y="715" width="308" height="57"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Finished Weighing">
-                                            <fontDescription key="titleFontDescription" type="system" pointSize="36"/>
-                                        </buttonConfiguration>
+                                        <fontDescription key="fontDescription" type="system" pointSize="36"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Finished Weighing"/>
                                         <connections>
                                             <segue destination="wXn-0n-v9N" kind="show" id="3SG-PZ-3co"/>
                                         </connections>
@@ -169,6 +168,7 @@
                     <connections>
                         <outlet property="acceptWeight" destination="FM4-s4-WFh" id="F1h-RX-C3u"/>
                         <outlet property="averageLabel" destination="XjB-0d-T2F" id="PtA-c1-sL1"/>
+                        <outlet property="cancelWeighing" destination="CFH-Tr-WMP" id="Ugc-g2-KAa"/>
                         <outlet property="currentSubjectLabel" destination="GlQ-Ho-BwO" id="JNW-8P-ReC"/>
                         <outlet property="dateLabel" destination="cmU-AQ-1a7" id="mWU-IO-6JG"/>
                         <outlet property="exptCodeLabel" destination="q2V-gl-Pku" id="hN5-h7-0ZT"/>
@@ -268,6 +268,9 @@
             <point key="canvasLocation" x="-69.152542372881356" y="99.512195121951223"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="3SG-PZ-3co"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
