@@ -49,8 +49,8 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     @IBOutlet weak var cancelWeighing:UIButton!
     
     
-    static let k4AcrossSpacing:CGFloat = 36
-    static let k5AcrossSpacing:CGFloat  = 24
+    let k4AcrossSpacing:CGFloat = 24 // 36
+    let k5AcrossSpacing:CGFloat  = 10 //24
     
     // handling scale weights
     private var tareVal: Double = 0 // applied to the weight to zero it
@@ -85,7 +85,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     // handling subjects
     
     var subjects:  [BartenderSubject] = []
-    private var currentSubject: BartenderSubject!
+    private var currentSubjectIndex: Int  = -1
     
     var numSubjects:UInt = 0
     
@@ -135,7 +135,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         exptCodeLabel.text = exptCode
         
         // no subject selected, so show weight in red
-        weightLabel.textColor = UIColor.red
+        weightLabel.textColor = UIColor.purple
         acceptWeight.isEnabled = false
         
         // set up the collection view
@@ -519,20 +519,32 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     // MARK: Handling Current Subject
     
-    func setCurrentSubject(theSubject:BartenderSubject!) {
+    func setCurrentSubject(theSubject:BartenderSubject?) {
         
         resetWeights()
         
         if (nil != theSubject) {
-            currentSubjectLabel.text = theSubject.id
-            
-            // TODO: save old subject data?
-            currentSubject = theSubject;
+            currentSubjectLabel.text = theSubject?.id
+            currentSubjectLabel.textColor = UIColor.black
+            currentSubjectIndex = indexOfSubject(theSubject)
         }
         else {
             currentSubjectLabel.text = "NONE"
-            currentSubject = nil;
+            currentSubjectLabel.textColor = UIColor.lightGray
+            currentSubjectIndex = -1
         }
+    }
+    
+    func indexOfSubject(_ theSubject:BartenderSubject!) -> Int {
+        
+       for index in subjects.indices {
+       
+            if (subjects[index].id == theSubject.id) {
+                return index
+            }
+       }
+    
+        return -1
     }
     
     func connectToFirebase() {
@@ -594,9 +606,8 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                     let subjectID = String(format: "%@%02d",exptCode,(index + 1))
                     let theSubject = BartenderSubject(id: subjectID, 
                                                       weight: kMissingWeightValue, 
-                                                      first_weight: kMissingWeightValue, 
                                                       last_weight: kMissingWeightValue, 
-                                                      initial_weight: 300.00,
+                                                      initial_weight: kMissingWeightValue,
                                                       group: "Unassigned",
                                                       indexPath:IndexPath(row: Int(index), section: 0))
                     
@@ -604,13 +615,14 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                     getSubjectWeightsFromFirebase(subjectID:subjectID,subjectIndex:Int(index)) 
                 }
                 
-                // TODO: call this after numSubjectsDownloaded == numSubjects
-                setCurrentSubject(theSubject: subjects[0])
+                setCurrentSubject(theSubject: nil)
                 
             }
         })
         
         // TODO: is there a way to monitor self.numSubjectsDownloaded, and when it reaches self.numSubjects
+        // TODO: call this after numSubjectsDownloaded == numSubjects
+
         // then call self.subjectsCollection.reloadData()
     }
     
@@ -651,16 +663,27 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                 //            for (timestamp,weight) in timestampedWeights {
                 //                print(timestamp,weight)
                 //            }
-                // TODO: sort weights based on timestamps, get the last value
+                // TODO: sort weights based on timestamps, get the most last value as last_weight
+                // get the first non-missing value as initial weight
                 let sortedDates = Array(timestampedWeights.keys).sorted(by:<)
-                let first_weight_number =  timestampedWeights[sortedDates[0]]
-                let last_weight_number =  timestampedWeights[sortedDates[sortedDates.count - 1]]
-                self.subjects[subjectIndex].first_weight = first_weight_number?.doubleValue ?? kMissingWeightValue
-                self.subjects[subjectIndex].last_weight = last_weight_number?.doubleValue ?? kMissingWeightValue
                 
-                self.subjects[subjectIndex].initial_weight = self.subjects[subjectIndex].first_weight
+                self.subjects[subjectIndex].initial_weight = kMissingWeightValue
+                for first_weight_index in sortedDates.indices {
+                    let weight_number = timestampedWeights[sortedDates[first_weight_index]] 
+                    self.subjects[subjectIndex].initial_weight = weight_number?.doubleValue ?? kMissingWeightValue
+                    if (kMissingWeightValue != self.subjects[subjectIndex].initial_weight) {
+                        break
+                    }
+                }
+            
+                for last_weight_index in sortedDates.indices.reversed() {
+                    let weight_number = timestampedWeights[sortedDates[last_weight_index]] 
+                    self.subjects[subjectIndex].last_weight = weight_number?.doubleValue ?? kMissingWeightValue
+                    if (kMissingWeightValue != self.subjects[subjectIndex].last_weight) {
+                        break
+                    }
+                }
                 
-                print(subjectIndex, " ", self.subjects[subjectIndex].first_weight, " - ", self.subjects[subjectIndex].last_weight)
                 
             }
             else {
@@ -701,21 +724,19 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     func updateCurrentSubjectWeight(weight:Double) {
         
-        if (nil == currentSubject) {
+        if (-1 == currentSubjectIndex) {
             return
         }
         
-        currentSubject.weight = weight
+        subjects[currentSubjectIndex].weight = weight
         
-        //  saveCurrentSubjectToFirebase()
         
-        let currentSubjectCell = subjectsCollection.cellForItem(at: currentSubject.indexPath) as! SubjectCollectionViewCell?
+        let currentSubjectCell = subjectsCollection.cellForItem(at: subjects[currentSubjectIndex].indexPath) as! SubjectCollectionViewCell?
         
-        currentSubjectCell?.setSubject(theSubject: currentSubject)
+        currentSubjectCell?.setSubject(theSubject: subjects[currentSubjectIndex])
         
-        subjectsCollection.deselectItem(at: currentSubject.indexPath, animated: true)
-        subjectsCollection.delegate?.collectionView?(subjectsCollection, didDeselectItemAt: currentSubject.indexPath)
-        currentSubject = nil
+        subjectsCollection.deselectItem(at: subjects[currentSubjectIndex].indexPath, animated: true)
+        subjectsCollection.delegate?.collectionView?(subjectsCollection, didDeselectItemAt: subjects[currentSubjectIndex].indexPath)
         
         setCurrentSubject(theSubject:nil)
         
@@ -768,7 +789,15 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
         
         cell.backgroundView?.backgroundColor = UIColor.lightGray
+        print(cell.frame)
+        print(cell.backgroundView?.frame)
         cell.subject.indexPath = indexPath
+        cell.weightLabel.textColor = UIColor.white
+        cell.percentLabel.textColor = UIColor.white
+        cell.initialLabel.textColor = UIColor.white
+         cell.lastLabel.textColor = UIColor.white
+
+        
         setCurrentSubject(theSubject: cell.subject)
          weightLabel.textColor = UIColor.white
          acceptWeight.isEnabled = true
@@ -777,10 +806,14 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         // Asks the delegate if the specified item should be deselected.
         return true
     }
-    func collectionView(_: UICollectionView, didDeselectItemAt: IndexPath) {
+    func collectionView(_: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         //  Tells the delegate that the item at the specified path was deselected.
         
-        weightLabel.textColor = UIColor.red
+         let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
+        
+        cell.updateCellFromSubject()
+        
+        weightLabel.textColor = UIColor.purple
         acceptWeight.isEnabled = false
         
     }
@@ -799,11 +832,11 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         if (switchWidth.selectedSegmentIndex == 0) {
             // 4 across
-            return 36.0
+            return k4AcrossSpacing 
         }
         else {
             // 5 across
-            return 24.0
+            return k5AcrossSpacing
         }
     }
     
@@ -873,19 +906,19 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
         for i in 0..<6 {
                 
-            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*20), first_weight: Double(i*20), last_weight: Double(i*20), initial_weight: Double(i*20), group: "GROUP1")
+            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*20),  last_weight: Double(i*20), initial_weight: Double(i*20), group: "GROUP1")
         
             subjects.append(subject)
         }
          for i in 6..<12 {
                 
-            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*23), first_weight: Double(i*23), last_weight: Double(i*23), initial_weight: Double(i*23), group: "GROUP2")
+            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*23),  last_weight: Double(i*23), initial_weight: Double(i*23), group: "GROUP2")
         
             subjects.append(subject)
         }
          for i in 12..<18 {
                 
-            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*19), first_weight: Double(i*19), last_weight: Double(i*19), initial_weight: Double(i*19), group: "GROUP3")
+            let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*19),  last_weight: Double(i*19), initial_weight: Double(i*19), group: "GROUP3")
         
             subjects.append(subject)
         }
@@ -944,6 +977,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             let timeStamp =  timeStampFormatter.string(from: Date())
             
             for theSubject in subjects {
+                print("\(theSubject.id) \(theSubject.weight)" )
                 saveSubjectToFirebase(theSubject:theSubject, timeStamp:timeStamp)
             }
             updateGroupMeans(timeStamp:timeStamp);
