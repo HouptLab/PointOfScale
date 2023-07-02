@@ -57,7 +57,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     private var tareHelper: Double = 0 //used to make the tareVal
     
     private var centralManager: CBCentralManager!
-    private var peripheral: CBPeripheral!
+    private var targetPeripheral: CBPeripheral!
     private var discoveredPeripheral: CBPeripheral!
     private var weightService: CBService!
     
@@ -253,12 +253,12 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         self.centralManager.stopScan()
         
         // Copy the peripheral instance
-        self.peripheral = peripheral
-        self.peripheral.delegate = self
+        self.targetPeripheral = peripheral
+        self.targetPeripheral.delegate = self
         
         // Connect!
         print("5. Trying to Connecting to perhiperal", peripheral.name!)
-        self.centralManager.connect(self.peripheral, options:nil)
+        self.centralManager.connect(self.targetPeripheral, options:nil)
         // if connect succeeds, centralManager(_:didConnect:) will be called
         // if connect fails, centralManager(_:didFailToConnect:error:) 
         // centralManager.connect does not time out, so have to call cancelPeripheralConnection to cancel explicitly
@@ -270,7 +270,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     // The handler if we do connect succesfully
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        if peripheral == self.peripheral {
+        if peripheral == self.targetPeripheral {
             print("6. Connected to peripheral: ", peripheral.name!)
             // look for scaleService
             peripheral.discoverServices([EtekcityScalePeripheral.scaleServiceUUID]) 
@@ -297,6 +297,21 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             }
         }
     } // peripheral didDiscoverServices
+    
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral 
+                       peripheral: CBPeripheral, error: Error?) {
+        print("Disconnected from peripheral")
+//        if ((peripheral.name?.contains(EtekcityScalePeripheral.name)) != nil) {
+//            print("Retrying")
+//            self.centralManager.connect(peripheral)
+//        }
+    }
+
+
+@IBAction func reconnect(_ sender: Any) {
+    self.centralManager.connect(self.targetPeripheral, options:nil)
+}
     
     // --------------------------------------------------------------------- 
     
@@ -795,7 +810,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         cell.weightLabel.textColor = UIColor.white
         cell.percentLabel.textColor = UIColor.white
         cell.initialLabel.textColor = UIColor.white
-         cell.lastLabel.textColor = UIColor.white
+        cell.lastLabel.textColor = UIColor.white
 
         
         setCurrentSubject(theSubject: cell.subject)
@@ -812,6 +827,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
          let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
         
         cell.updateCellFromSubject()
+        subjectsCollection.reloadItems(at:[indexPath])
         
         weightLabel.textColor = UIColor.purple
         acceptWeight.isEnabled = false
@@ -878,19 +894,23 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     for subject in subjects {
           
+           
             let groupIndex = indexOfGroup(subject.group);
-            groups[groupIndex].n = groups[groupIndex].n + 1
-            let delta = subject.weight - groups[groupIndex].mean
-            groups[groupIndex].mean = groups[groupIndex].mean + delta / Double(groups[groupIndex].n)
-            let delta2 = subject.weight - groups[groupIndex].mean
-            groups[groupIndex].m2 =  groups[groupIndex].m2 + delta * delta2
+                
+             if (kMissingWeightValue != subject.weight) {
+                groups[groupIndex].n = groups[groupIndex].n + 1
+                let delta = subject.weight - groups[groupIndex].mean
+                groups[groupIndex].mean = groups[groupIndex].mean + delta / Double(groups[groupIndex].n)
+                let delta2 = subject.weight - groups[groupIndex].mean
+                groups[groupIndex].m2 =  groups[groupIndex].m2 + delta * delta2
+            }
             
         }
         
         
         // finalize means and sem
          for index in groups.indices {
-                if (0 == groups[index].n) {
+                if (2 > groups[index].n) {
                     groups[index].sem  = 0
                 }
                 else {

@@ -79,10 +79,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ujq-lt-bXd">
-                                        <rect key="frame" x="230" y="529" width="154" height="55"/>
+                                        <rect key="frame" x="280" y="538" width="104" height="41"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="36"/>
-                                        <state key="normal" title="Reset"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <state key="normal" title="reconnect"/>
+                                        <connections>
+                                            <action selector="reconnect:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="jE1-KP-ibe"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XjB-0d-T2F">
                                         <rect key="frame" x="40" y="386" width="144" height="21"/>
@@ -92,10 +95,10 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CFH-Tr-WMP">
-                                        <rect key="frame" x="228" y="623" width="154" height="55"/>
+                                        <rect key="frame" x="194" y="623" width="188" height="55"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                        <state key="normal" title="Cancel"/>
+                                        <state key="normal" title="Cancel w/o saving"/>
                                         <connections>
                                             <segue destination="wXn-0n-v9N" kind="show" id="fhQ-gQ-dHF"/>
                                         </connections>

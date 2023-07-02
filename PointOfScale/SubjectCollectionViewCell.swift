@@ -152,7 +152,7 @@ class SubjectCollectionViewCell: UICollectionViewCell {
             ctx.setStrokeColor(UIColor.purple.cgColor)
         }
         else {
-             ctx.setStrokeColor(UIColor.gray.cgColor)
+             ctx.setStrokeColor(UIColor.lightGray.cgColor)
         }
         ctx.setLineWidth(2)
         ctx.strokePath()
