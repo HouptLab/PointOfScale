@@ -13,7 +13,6 @@ struct BartenderSubject : Identifiable {
     
     var weight: Double 
     
-    
     var last_weight: Double
     
     var initial_weight: Double

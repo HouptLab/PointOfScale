@@ -13,79 +13,81 @@ import FirebaseAuth
 import SafariServices
 
 /*
-1 ask firebase for list of experiments 
-2 display in a list or dropdown menu
-3 allow user to either 
-    a) select exisiting experiment 
-    b) enter new experiment code
-    c) enter experiment code (i.e. by typing or scanning barcode)
-    
-*/
+ 1 ask firebase for list of experiments 
+ 2 display in a list or dropdown menu
+ 3 allow user to either 
+ a) select exisiting experiment 
+ b) enter new experiment code
+ c) enter experiment code (i.e. by typing or scanning barcode)
+ 
+ */
 
 class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataSource  {
-
-        @IBOutlet weak var exptCodeField: UITextField!
-        
-        @IBOutlet weak var exptDescriptionLabel: UITextView!
-        
-        @IBOutlet weak var startWeighing:UIButton!
-        
-        @IBOutlet weak var viewExptData:UIButton!
-        
-        @IBOutlet weak var tableController:UITableViewController!
-        
-        @IBOutlet weak var tableView: UITableView!
-        
-        @IBOutlet weak var loadingLabel: UILabel!
-        
-
+    
+    @IBOutlet weak var exptCodeField: UITextField!
+    
+    @IBOutlet weak var exptDescriptionLabel: UITextView!
+    
+    @IBOutlet weak var startWeighing:UIButton!
+    
+    @IBOutlet weak var viewExptData:UIButton!
+    
+    @IBOutlet weak var tableController:UITableViewController!
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var loadingLabel: UILabel!
+    
+    
     
     // cell reuse id (cells that scroll out of view can be reused)
     let cellReuseIdentifier = "cell"
     
-        // Data model: These strings will be the data for the table view cells
+    // Data model: These strings will be the data for the table view cells
     var expts: [BartenderExpt] = []
     //["Horse", "Cow", "Camel", "Sheep", "Goat"]
     
     // firebase
-
-var fbRef: DatabaseReference!
-
-// ---------------------------------------------------------------------
-
-
+    
+    var fbRef: DatabaseReference!
+    
+    // ---------------------------------------------------------------------
+    
+    
     required init?(coder: NSCoder) {
         super.init(coder:coder);
         //fatalError("init(coder:) has not been implemented")
         
     }
     
-// ---------------------------------------------------------------------
-
-
+    // ---------------------------------------------------------------------
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-                
+        
         // Register the table view cell class and its reuse id
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         
         // (optional) include this line if you want to remove the extra empty cell divider lines
         // self.tableView.tableFooterView = UIView()
-
+        
         // This view controller itself will provide the delegate methods and row data for the table view.
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.layer.borderWidth = 2.0;
         
-            startWeighing.isEnabled = false
+        startWeighing.isEnabled = false
         
         exptCodeField.placeholder = "Select Expt"
         
         connectToFirebase()
-        getCurrentExperimentsFromFirebase()
+        
+        // TODO respond to notification that connect worked? or have connect call getCurrentExperiments?
+        //  getCurrentExperimentsFromFirebase()
         
     }
     
@@ -118,32 +120,59 @@ var fbRef: DatabaseReference!
     }
     
     
-func connectToFirebase() {
-
-
-    fbRef = Database.database(url: "https://bartenderdata.firebaseio.com" ).reference()
-    // https://bartenderdata.firebaseio.com
-    print("firebase")
-}
-
-func getFirebaseExperimentsDataPath() -> String {
-
-    let dataPath = "expts"
-     
-    return dataPath
-
-}
-
-func getCurrentExperimentsFromFirebase() {
-
-    loadingLabel.isHidden = false
-    startWeighing.isEnabled = false
-    
-    let dataPath = getFirebaseExperimentsDataPath()
-    
-    expts = []
+    func connectToFirebase() {
         
-    fbRef.child(dataPath).getData(completion:  { [self] error, snapshot in
+        
+        let firebaseEmail = UserDefaults.standard.value(forKey: "FirebaseEmail") as? String
+        let firebasePassword = UserDefaults.standard.value(forKey: "FirebasePassword")  as? String
+        let firebaseURL = UserDefaults.standard.value(forKey: "FirebaseURL")  as? String
+        
+        // TODO: check that firebase url has https:// in front of it
+        
+        if ( (nil == firebaseEmail || nil == firebasePassword || nil == firebaseURL) 
+             ||
+             ( 0 == firebaseEmail?.count || 0 == firebasePassword?.count || 0 == firebaseURL?.count)) {
+            
+            // TODO: post alert that we need an url, email and password
+            
+        }
+        
+        
+        Auth.auth().signIn(withEmail: firebaseEmail!, password: firebasePassword!) { [weak self] authResult, error in
+            
+            // TODO: handle error
+            guard let strongSelf = self else { return }
+            // ...
+            
+            
+            self?.fbRef = Database.database(url: firebaseURL! ).reference()
+            
+            // TODO: handle error -- PUT IN TRY / CATCH?
+            
+            print("firebase")
+            
+            self?.getCurrentExperimentsFromFirebase()
+        } // signin
+    }
+    
+    func getFirebaseExperimentsDataPath() -> String {
+        
+        let dataPath = "expts"
+        
+        return dataPath
+        
+    }
+    
+    func getCurrentExperimentsFromFirebase() {
+        
+        loadingLabel.isHidden = false
+        startWeighing.isEnabled = false
+        
+        let dataPath = getFirebaseExperimentsDataPath()
+        
+        expts = []
+        
+        fbRef.child(dataPath).getData(completion:  { [self] error, snapshot in
             guard error == nil else {
                 print(error!.localizedDescription)
                 return;
@@ -152,22 +181,24 @@ func getCurrentExperimentsFromFirebase() {
                 // there is no expt here 
             }
             else {
-            
+                
                 print(snapshot!.childrenCount) 
-             
-                 for expt_child in (snapshot!.children) {
+                
+                for expt_child in (snapshot!.children) {
                     
                     let expt_snap = expt_child as! DataSnapshot
-                 
-                     let snapshotExptCode = expt_snap.key 
+                    
+                    let snapshotExptCode = expt_snap.key 
                     
                     let dict = expt_snap.value as! [String: Any?]
+                    
+                    // TODO: check to make sure dict has values we're looking for...
                     let snapshotName =  dict["name"] as! String
                     print("snapshotExptCode: ",snapshotExptCode, " ", snapshotName)
                     
-                     let snapshotUpdated =  dict["last_updated"] as! String
-                     
-                     let snapshotArchived =  dict["archived"] as? [String:String]
+                    let snapshotUpdated =  dict["last_updated"] as! String
+                    
+                    let snapshotArchived =  dict["archived"] as? [String:String]
                     
                     if (nil == snapshotArchived) {
                         expts.append(BartenderExpt(archived: nil, id:snapshotExptCode, name: snapshotName, last_updated: snapshotUpdated ))
@@ -177,35 +208,36 @@ func getCurrentExperimentsFromFirebase() {
                 loadingLabel.isHidden = true
                 self.tableView.reloadData()
             }
-    });
-    
-}    
+        });
+        
+    }    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let weightsViewController = segue.destination as? WeightsViewController {
-
+            
             let code = exptCodeField.text!
+            let name = exptDescriptionLabel.text!
             // TODO: validate exptCode to make sure it's one of our firebase experiments
-
-            weightsViewController.setExptCode(code:code)
-        
+            
+            weightsViewController.setExptCode(code:code,name:name)
+            
             // TODO: pass in experiment description, or can weightsViewController get that from firebase too?
         }
     }
     
     @IBAction func showExptInSafari() {
-    
-    let code = exptCodeField.text
-            // TODO: validate exptCode to make sure it's one of our firebase experiments
-            
+        
+        let code = exptCodeField.text
+        // TODO: validate exptCode to make sure it's one of our firebase experiments
+        
         if (nil == code || 0 == code?.count) {
             return
         }
-
+        
         let urlString:String = "https://www.houptlab.org/bartab/expt/?id=" + code!;
         let url : URL = URL(string:urlString)!
         let svc = SFSafariViewController(url: url)
         present(svc, animated: true, completion: nil)
-    
+        
     }
 }
 

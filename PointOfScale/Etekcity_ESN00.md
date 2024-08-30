@@ -1,3 +1,6 @@
+Etekcity Nutrition Scale
+model # ESN00
+
 ## From Bluetooth explorer
 
 Device: "Etekcity Nutrition Scale" = 45 74 65 6b 63 69 74 79 20 4e 75 74 72 69 74 69 6f 6e 20 53 63 61 6c 65

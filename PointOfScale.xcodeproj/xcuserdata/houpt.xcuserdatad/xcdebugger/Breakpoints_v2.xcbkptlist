@@ -7,69 +7,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "84BF9D42-14A8-41BD-B565-DA2E58FB916F"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PointOfScale/SubjectCollectionViewCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
-            landmarkName = "init(theSubject:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "84BF9D42-14A8-41BD-B565-DA2E58FB916F - ffca31fb2419d180"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PointOfScale.SubjectCollectionViewCell.init(theSubject: PointOfScale.BartenderSubject) -&gt; PointOfScale.SubjectCollectionViewCell"
-                  moduleName = "PointOfScale"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/SubjectCollectionViewCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "712">
-               </Location>
-               <Location
-                  uuid = "84BF9D42-14A8-41BD-B565-DA2E58FB916F - ffca31fb2419d180"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PointOfScale.SubjectCollectionViewCell.init(theSubject: PointOfScale.BartenderSubject) -&gt; PointOfScale.SubjectCollectionViewCell"
-                  moduleName = "PointOfScale"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/SubjectCollectionViewCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "585">
-               </Location>
-               <Location
-                  uuid = "84BF9D42-14A8-41BD-B565-DA2E58FB916F - ffca31fb2419d180"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "PointOfScale.SubjectCollectionViewCell.init(theSubject: PointOfScale.BartenderSubject) -&gt; PointOfScale.SubjectCollectionViewCell"
-                  moduleName = "PointOfScale"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/SubjectCollectionViewCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "480">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "DD806C25-4CE5-4553-9DC2-668BC90648C2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -77,13 +14,13 @@
             filePath = "PointOfScale/WeightsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "999"
-            endingLineNumber = "999"
+            startingLineNumber = "1041"
+            endingLineNumber = "1041"
             landmarkName = "prepare(for:sender:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "DD806C25-4CE5-4553-9DC2-668BC90648C2 - 1d515b3d38833616"
+                  uuid = "DD806C25-4CE5-4553-9DC2-668BC90648C2 - 1d515b3d38833c04"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -93,12 +30,11 @@
                   urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "995"
-                  endingLineNumber = "995"
-                  offsetFromSymbolStart = "1676">
+                  startingLineNumber = "1041"
+                  endingLineNumber = "1041">
                </Location>
                <Location
-                  uuid = "DD806C25-4CE5-4553-9DC2-668BC90648C2 - 1d515b3d38833616"
+                  uuid = "DD806C25-4CE5-4553-9DC2-668BC90648C2 - 1d515b3d38833c04"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -108,43 +44,10 @@
                   urlString = "file:///Users/houpt/Programming_Github/PointOfScale/PointOfScale/WeightsViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "995"
-                  endingLineNumber = "995"
-                  offsetFromSymbolStart = "1516">
+                  startingLineNumber = "1041"
+                  endingLineNumber = "1041">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "EDC2E49A-E5C9-4FAB-8E6F-4567AD0A7C65"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PointOfScale/WeightsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "304"
-            endingLineNumber = "304"
-            landmarkName = "centralManager(_:didDisconnectPeripheral:error:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "30A62918-AF1E-439C-B59B-3BDDE8C28603"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PointOfScale/WeightsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
-            landmarkName = "reconnect(_:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

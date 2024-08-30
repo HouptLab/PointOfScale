@@ -22,6 +22,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     
     var exptCode : String = "???"
+    var exptName : String = "???"
     
     // links to UI
     @IBOutlet weak var weightLabel: UILabel!
@@ -36,7 +37,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     @IBOutlet weak var subjectsCollection: UICollectionView!
     
-    @IBOutlet weak var currentSubjectLabel: UILabel!
+    @IBOutlet weak var currentSubjectLabel: UITextField!
     
     @IBOutlet weak var switchWidth:UISegmentedControl!
     
@@ -130,9 +131,10 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         resetAverage.addTarget(self, action: #selector(resetAverageWeight), for: .primaryActionTriggered) 
         
-     //   testGroupMeans()
+        //   testGroupMeans()
         
         exptCodeLabel.text = exptCode
+        exptDescriptionLabel.text =  exptName
         
         // no subject selected, so show weight in red
         weightLabel.textColor = UIColor.purple
@@ -144,7 +146,9 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                                     forCellWithReuseIdentifier: "subjectCell")
         
         connectToFirebase()
-        getSubjectsFromFirebase()
+        
+        // TODO: respond to notification to getSubjectsFromFirebase?
+        // getSubjectsFromFirebase()
         
         
         // TODO: make sure we have gotten all the subjects before setting current subjects
@@ -300,18 +304,18 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral 
-                       peripheral: CBPeripheral, error: Error?) {
+                        peripheral: CBPeripheral, error: Error?) {
         print("Disconnected from peripheral")
-//        if ((peripheral.name?.contains(EtekcityScalePeripheral.name)) != nil) {
-//            print("Retrying")
-//            self.centralManager.connect(peripheral)
-//        }
+        //        if ((peripheral.name?.contains(EtekcityScalePeripheral.name)) != nil) {
+        //            print("Retrying")
+        //            self.centralManager.connect(peripheral)
+        //        }
     }
-
-
-@IBAction func reconnect(_ sender: Any) {
-    self.centralManager.connect(self.targetPeripheral, options:nil)
-}
+    
+    
+    @IBAction func reconnect(_ sender: Any) {
+        self.centralManager.connect(self.targetPeripheral, options:nil)
+    }
     
     // --------------------------------------------------------------------- 
     
@@ -552,21 +556,51 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     func indexOfSubject(_ theSubject:BartenderSubject!) -> Int {
         
-       for index in subjects.indices {
-       
+        for index in subjects.indices {
+            
             if (subjects[index].id == theSubject.id) {
                 return index
             }
-       }
-    
+        }
+        
         return -1
     }
     
     func connectToFirebase() {
         
-        fbRef = Database.database(url: "https://bartenderdata.firebaseio.com" ).reference()
-        // https://bartenderdata.firebaseio.com
-        print("firebase")
+        
+        let firebaseEmail = UserDefaults.standard.value(forKey: "FirebaseEmail") as? String
+        let firebasePassword = UserDefaults.standard.value(forKey: "FirebasePassword")  as? String
+        let firebaseURL = UserDefaults.standard.value(forKey: "FirebaseURL")  as? String
+        
+        // TODO: check that firebase url has https:// in front of it
+        
+        if ( (nil == firebaseEmail || nil == firebasePassword || nil == firebaseURL) 
+             ||
+             ( 0 == firebaseEmail?.count || 0 == firebasePassword?.count || 0 == firebaseURL?.count)) {
+            
+            // TODO: post alert that we need an url, email and password
+            
+        }
+        
+        
+        Auth.auth().signIn(withEmail: firebaseEmail!, password: firebasePassword!) { [weak self] authResult, error in
+            
+            // TODO: handle error
+            guard let strongSelf = self else { return }
+            // ...
+            
+            self?.fbRef = Database.database(url: firebaseURL! ).reference()
+            
+            // TODO: handle error -- PUT IN TRY / CATCH?
+            
+            print("firebase")
+            
+            // TODO: Post notification that connect worked? or just call get subjects now...
+            
+            self?.getSubjectsFromFirebase()
+            
+        } // sign in
     }
     
     func getFirebaseSubjectsDataPath(subjectID:String) -> String {
@@ -637,7 +671,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         // TODO: is there a way to monitor self.numSubjectsDownloaded, and when it reaches self.numSubjects
         // TODO: call this after numSubjectsDownloaded == numSubjects
-
+        
         // then call self.subjectsCollection.reloadData()
     }
     
@@ -654,9 +688,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             }
             
             if ((snapshot?.exists())!) {
-                
                 self.subjects[subjectIndex].group = snapshot?.value as! String
-                
             }
             
         });
@@ -690,7 +722,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                         break
                     }
                 }
-            
+                
                 for last_weight_index in sortedDates.indices.reversed() {
                     let weight_number = timestampedWeights[sortedDates[last_weight_index]] 
                     self.subjects[subjectIndex].last_weight = weight_number?.doubleValue ?? kMissingWeightValue
@@ -698,7 +730,6 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                         break
                     }
                 }
-                
                 
             }
             else {
@@ -717,7 +748,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     func saveSubjectToFirebase(theSubject:BartenderSubject, timeStamp:String) {
         /*
          expts/<expt_code>/subjects/<subject_code>/data/"Body Weight"/"YYYY-MM-DD HH:mm"/<weight-as-float>
-
+         
          expts/<expt_code>/Measures/"Body Weight"/"Body Weight (g)"
          
          */
@@ -804,18 +835,18 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
         
         cell.backgroundView?.backgroundColor = UIColor.lightGray
-        print(cell.frame)
-        print(cell.backgroundView?.frame)
+        // print(cell.frame)
+        // print(cell.backgroundView?.frame)
         cell.subject.indexPath = indexPath
         cell.weightLabel.textColor = UIColor.white
         cell.percentLabel.textColor = UIColor.white
         cell.initialLabel.textColor = UIColor.white
         cell.lastLabel.textColor = UIColor.white
-
+        
         
         setCurrentSubject(theSubject: cell.subject)
-         weightLabel.textColor = UIColor.white
-         acceptWeight.isEnabled = true
+        weightLabel.textColor = UIColor.white
+        acceptWeight.isEnabled = true
     }
     func collectionView(_: UICollectionView, shouldDeselectItemAt: IndexPath) -> Bool {
         // Asks the delegate if the specified item should be deselected.
@@ -824,7 +855,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     func collectionView(_: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         //  Tells the delegate that the item at the specified path was deselected.
         
-         let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
+        let cell =  subjectsCollection.cellForItem(at: indexPath) as! SubjectCollectionViewCell
         
         cell.updateCellFromSubject()
         subjectsCollection.reloadItems(at:[indexPath])
@@ -858,16 +889,16 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     // MARK: Prepare for segue
     
-    func setExptCode(code:String) {
+    func setExptCode(code:String,name:String) {
         
         exptCode = code
-        
+        exptName = name
         // TODO: refresh connection to firebase
         
     }
     
     func indexOfGroup( _ name:String) -> Int {
-    
+        
         for index in groups.indices {
             if (groups[index].id == name) {
                 return index
@@ -877,7 +908,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         groups.append(BartenderGroupMean(id: name, mean:0,n:0,sem:0, m2: 0))
         
         return groups.count - 1
-    
+        
     }
     
     func getFirebaseGroupMeansPath(group:String,timestamp:String) -> String {
@@ -891,13 +922,13 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
     
     
     func calcGroupMeans() {
-    
-    for subject in subjects {
-          
-           
+        
+        for subject in subjects {
+            
+            
             let groupIndex = indexOfGroup(subject.group);
-                
-             if (kMissingWeightValue != subject.weight) {
+            
+            if (kMissingWeightValue != subject.weight) {
                 groups[groupIndex].n = groups[groupIndex].n + 1
                 let delta = subject.weight - groups[groupIndex].mean
                 groups[groupIndex].mean = groups[groupIndex].mean + delta / Double(groups[groupIndex].n)
@@ -909,37 +940,37 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         
         // finalize means and sem
-         for index in groups.indices {
-                if (2 > groups[index].n) {
-                    groups[index].sem  = 0
-                }
-                else {
-                    groups[index].sem = sqrt(groups[index].m2 / Double(groups[index].n - 1)) / sqrt(Double(groups[index].n))
-                }
+        for index in groups.indices {
+            if (2 > groups[index].n) {
+                groups[index].sem  = 0
+            }
+            else {
+                groups[index].sem = sqrt(groups[index].m2 / Double(groups[index].n - 1)) / sqrt(Double(groups[index].n))
+            }
         }
         
     }
     
     func testGroupMeans() {
-    
+        
         subjects.removeAll()
-    
+        
         for i in 0..<6 {
-                
+            
             let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*20),  last_weight: Double(i*20), initial_weight: Double(i*20), group: "GROUP1")
-        
+            
             subjects.append(subject)
         }
-         for i in 6..<12 {
-                
+        for i in 6..<12 {
+            
             let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*23),  last_weight: Double(i*23), initial_weight: Double(i*23), group: "GROUP2")
-        
+            
             subjects.append(subject)
         }
-         for i in 12..<18 {
-                
+        for i in 12..<18 {
+            
             let subject = BartenderSubject(id: "SU\(i)", weight:Double(i*19),  last_weight: Double(i*19), initial_weight: Double(i*19), group: "GROUP3")
-        
+            
             subjects.append(subject)
         }
         
@@ -948,15 +979,15 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         // should be exact, but check with a tolerance
         assert(0.01 > groups[0].mean - 50)
         assert(0.01 > groups[0].sem - 15.2752523165195)
- 
+        
         assert(0.01 >  groups[1].mean - 195.5)
         assert(0.01 > groups[1].sem - 17.5665401639974)
-
-       assert(0.01 > groups[2].mean - 275.5)
-       assert(0.01 > groups[2].sem - 14.5114897006935)
-       
+        
+        assert(0.01 > groups[2].mean - 275.5)
+        assert(0.01 > groups[2].sem - 14.5114897006935)
+        
         print(groups)
-    
+        
     }
     func updateGroupMeans(timeStamp:String)  {
         // expts/<expt_code>/subjects/<subject_code>/group_means/<group>/<measure>/<timestamp>/[mean|n|sem]/double
@@ -968,7 +999,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         // update on firebase
         for group in groups {
-        
+            
             let groupMeansPath = getFirebaseGroupMeansPath(group:group.id,timestamp:timeStamp)
             let meanPath = groupMeansPath + "/mean"
             let nPath = groupMeansPath + "/n"
@@ -982,8 +1013,16 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    func updateMeasures() {
+        // TODO: check if "/measures/Body Weight" already exists, so we don't need to overwrite everytime we save?
+        
+        let measuresPath  = "expts/" + exptCodeLabel.text! + "/measures/Body Weight" 
+        fbRef.child(measuresPath).setValue("Body Weight (g)")
+        
+    }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         let senderButton = sender as! UIButton
         if senderButton == cancelWeighing {
             return
@@ -991,10 +1030,13 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         // TODO: finished weighing, so clean up i.e. make sure saved to firebase, timestamped 
         // TODO: cache results on firebase until we are done weighing everyone, then put into final data structure,
-        // TODO: and update group means and update "last_updated field on firebase 
-        if let selectExperimentController = segue.destination as? SelectExperiment {
+        // TODO: and update group means and update "last_updated" field on firebase 
+        if segue.destination is SelectExperiment {
             
             let timeStamp =  timeStampFormatter.string(from: Date())
+            
+            updateMeasures();
+            
             
             for theSubject in subjects {
                 print("\(theSubject.id) \(theSubject.weight)" )
@@ -1003,8 +1045,8 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             updateGroupMeans(timeStamp:timeStamp);
             
             
-            var updatedFormatter = DateFormatter()
- 
+            let updatedFormatter = DateFormatter()
+            
             
             updatedFormatter.dateFormat = "E yyyy-MM-dd HH:mm"   
             

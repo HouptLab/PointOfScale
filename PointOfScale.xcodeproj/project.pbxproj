@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,7 @@
 		2077FC3B28F8566800E6A8EB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3A28F8566800E6A8EB /* FirebaseAuth */; };
 		2077FC3D28F8566800E6A8EB /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3C28F8566800E6A8EB /* FirebaseDatabaseSwift */; };
 		2077FC3F28F8566800E6A8EB /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 2077FC3E28F8566800E6A8EB /* FirebaseFunctions */; };
+		2084EE6E2C8273DD00B5B62B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2084EE6D2C8273DD00B5B62B /* Settings.bundle */; };
 		20D342B028F9E5FE00889B67 /* SubjectCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D342AF28F9E5FE00889B67 /* SubjectCollectionView.swift */; };
 		20F252902561F7F500E52141 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F2528F2561F7F500E52141 /* AppDelegate.swift */; };
 		20F252922561F7F500E52141 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F252912561F7F500E52141 /* SceneDelegate.swift */; };
@@ -53,6 +54,7 @@
 		206557CB28F998EE003C54F0 /* SubjectCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SubjectCollectionViewCell.xib; sourceTree = "<group>"; };
 		206C9777295A1EAA00FB0678 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		207793EB2A4869290012EE04 /* BartenderGroupMean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BartenderGroupMean.swift; sourceTree = "<group>"; };
+		2084EE6D2C8273DD00B5B62B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		20D342AF28F9E5FE00889B67 /* SubjectCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectCollectionView.swift; sourceTree = "<group>"; };
 		20F2528C2561F7F500E52141 /* PointOfScale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PointOfScale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20F2528F2561F7F500E52141 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				20F2528F2561F7F500E52141 /* AppDelegate.swift */,
+				2084EE6D2C8273DD00B5B62B /* Settings.bundle */,
 				20F252912561F7F500E52141 /* SceneDelegate.swift */,
 				20F252932561F7F500E52141 /* WeightsViewController.swift */,
 				206557C628F994A2003C54F0 /* BartenderSubject.swift */,
@@ -289,6 +292,7 @@
 				20F252992561F7F600E52141 /* Assets.xcassets in Resources */,
 				206C9778295A1EAA00FB0678 /* GoogleService-Info.plist in Resources */,
 				20F252972561F7F500E52141 /* Main.storyboard in Resources */,
+				2084EE6E2C8273DD00B5B62B /* Settings.bundle in Resources */,
 				206557CD28F998EE003C54F0 /* SubjectCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,13 +433,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -484,12 +489,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
