@@ -192,16 +192,29 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
                     
                     let dict = expt_snap.value as! [String: Any?]
                     
-                    // TODO: check to make sure dict has values we're looking for...
-                    let snapshotName =  dict["name"] as! String
-                    print("snapshotExptCode: ",snapshotExptCode, " ", snapshotName)
-                    
-                    let snapshotUpdated =  dict["last_updated"] as! String
-                    
                     let snapshotArchived =  dict["archived"] as? [String:String]
                     
                     if (nil == snapshotArchived) {
-                        expts.append(BartenderExpt(archived: nil, id:snapshotExptCode, name: snapshotName, last_updated: snapshotUpdated ))
+                        // TODO: check to make sure dict has values we're looking for...
+                        let snapshotName =  dict["name"] as? String
+                        if (nil != snapshotName) {
+                            print("snapshotExptCode: ",snapshotExptCode, " ", snapshotName)
+                            
+                            let snapshotUpdated =  dict["last_updated"] as? String
+                            
+                            if (nil != snapshotUpdated) {
+                                expts.append(BartenderExpt(archived: nil, id:snapshotExptCode, name: snapshotName!, last_updated: snapshotUpdated! ))
+                            }
+                            else {
+                                print("snapshotExptCode missing last_updated: ",snapshotExptCode)
+                            }
+                        }
+                        else {
+                            print("snapshotExptCode missing name: ",snapshotExptCode)
+                        }
+                    }
+                    else {
+                        print("snapshotExptCode archived: ",snapshotExptCode)
                     }
                 }
                 
