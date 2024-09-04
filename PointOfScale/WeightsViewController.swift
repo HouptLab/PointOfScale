@@ -941,7 +941,11 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         // finalize means and sem
         for index in groups.indices {
-            if (2 > groups[index].n) {
+            if (0 == groups[index].n) {
+                groups[index].mean = kMissingWeightValue
+                groups[index].sem  = 0
+            }
+            if (1 == groups[index].n) {
                 groups[index].sem  = 0
             }
             else {
