@@ -1,0 +1,12 @@
+
+SelectExperiment -> WeightsViewController
+    (WeightsViewController.setExptCode(code:code,name:name) with selected experiment)
+    
+    WeightsViewController
+        gets subjects from firebase (getSubjectWeightsFromFirebase)
+        finds first (initial) weight
+        finds last (most recent) weight
+        reloads the SubjectCollectionView to display subjects initial/last weight
+        
+    SubjectCollectionView: allow selection of current subject
+    When use weight press, then WeightsViewController.updateCurrentSubjectWeight is called.

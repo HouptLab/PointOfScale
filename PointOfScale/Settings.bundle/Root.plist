@@ -52,6 +52,16 @@
 			<key>IsSecure</key>
 			<true/>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>BarTab URL</string>
+			<key>Key</key>
+			<string>BarTabURL</string>
+			<key>DefaultValue</key>
+			<string></string>
+		</dict>
 	</array>
 </dict>
 </plist>

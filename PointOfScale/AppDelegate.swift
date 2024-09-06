@@ -21,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         setDefaultsFromSettingsBundle()
         
+        // TODO: confirm that user has set up settings with urls, email, and password
+        // if not, can we throw to settings?
+        
    //     let defaultValues = ["FirebaseURL": "","FirebaseEmail": "","FirebasePassword": ""]
    //     UserDefaults.standard.register(defaults: defaultValues)
         

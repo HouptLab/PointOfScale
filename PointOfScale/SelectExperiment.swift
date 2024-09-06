@@ -140,18 +140,26 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
         
         Auth.auth().signIn(withEmail: firebaseEmail!, password: firebasePassword!) { [weak self] authResult, error in
             
-            // TODO: handle error
-            guard let strongSelf = self else { return }
-            // ...
+            if (nil != error) {
+                // TODO: handle error
+            }
+
+            guard let strongSelf = self else { 
+            
+                    // TODO: handle error
+                    
+                    return 
+                
+                }
             
             
-            self?.fbRef = Database.database(url: firebaseURL! ).reference()
+            strongSelf.fbRef = Database.database(url: firebaseURL! ).reference()
             
             // TODO: handle error -- PUT IN TRY / CATCH?
             
             print("firebase")
             
-            self?.getCurrentExperimentsFromFirebase()
+            strongSelf.getCurrentExperimentsFromFirebase()
         } // signin
     }
     
@@ -179,6 +187,7 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
             }
             if (nil == snapshot) {
                 // there is no expt here 
+                 // TODO: handle error
             }
             else {
                 
@@ -196,20 +205,22 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
                     
                     if (nil == snapshotArchived) {
                         // TODO: check to make sure dict has values we're looking for...
-                        let snapshotName =  dict["name"] as? String
+                        let snapshotName:String? =  dict["name"] as? String
                         if (nil != snapshotName) {
-                            print("snapshotExptCode: ",snapshotExptCode, " ", snapshotName)
+                            print("snapshotExptCode: ",snapshotExptCode, " ", snapshotName!)
                             
-                            let snapshotUpdated =  dict["last_updated"] as? String
+                            let snapshotUpdated:String? =  dict["last_updated"] as? String
                             
                             if (nil != snapshotUpdated) {
                                 expts.append(BartenderExpt(archived: nil, id:snapshotExptCode, name: snapshotName!, last_updated: snapshotUpdated! ))
                             }
                             else {
+                                 // TODO: handle error
                                 print("snapshotExptCode missing last_updated: ",snapshotExptCode)
                             }
                         }
                         else {
+                             // TODO: handle error
                             print("snapshotExptCode missing name: ",snapshotExptCode)
                         }
                     }
@@ -246,7 +257,15 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
             return
         }
         
-        let urlString:String = "https://www.houptlab.org/bartab/expt/?id=" + code!;
+         let bartabURL:String? = UserDefaults.standard.value(forKey: "BarTabURL") as? String
+        // e.g. "https://www.houptlab.org/bartab"
+        
+        if (nil == bartabURL) {
+            // TODO: handle error
+            return
+        }
+    
+        let urlString:String = bartabURL! + "/expt/?id=" + code!;
         let url : URL = URL(string:urlString)!
         let svc = SFSafariViewController(url: url)
         present(svc, animated: true, completion: nil)
