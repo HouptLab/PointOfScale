@@ -67,6 +67,7 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
     override func viewDidLoad() {
         super.viewDidLoad()
         
+
         
         // Register the table view cell class and its reuse id
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
@@ -90,6 +91,66 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
         //  getCurrentExperimentsFromFirebase()
         
     }
+    
+  override func viewDidAppear(_ animated: Bool) {
+  
+      super.viewDidAppear(animated);
+  
+            setDefaultsFromSettingsBundle()
+  }
+    
+    func setDefaultsFromSettingsBundle() {
+    //Read PreferenceSpecifiers from Root.plist in Settings.Bundle
+    if let settingsURL = Bundle.main.url(forResource: "Root", withExtension: "plist", subdirectory: "Settings.bundle"),
+        let settingsPlist = NSDictionary(contentsOf: settingsURL),
+        let preferences = settingsPlist["PreferenceSpecifiers"] as? [NSDictionary] {
+
+        var allGood = true
+        for prefSpecification in preferences {
+
+            if let key = prefSpecification["Key"] as? String, let value = prefSpecification["DefaultValue"] {
+
+                //If key doesn't exists in userDefaults then register it, else keep original value
+                if UserDefaults.standard.value(forKey: key) == nil {
+                
+                    allGood = false
+//
+//                    UserDefaults.standard.set(value, forKey: key)
+//                    NSLog("registerDefaultsFromSettingsBundle: Set following to UserDefaults - (key: \(key), value: \(value), type: \(type(of: value)))")
+                }
+            }
+            else {
+                // preference doesn't have key, e.g. the GroupSpecifier
+            }
+        }
+        
+        if (allGood) {
+            // TODO: post alert that settings must be set
+            let alert = UIAlertController(title: "Missing Firebase Settings", message: "One or more Firebase field (i.e. Firebase url, email, or password) is missing from the PointOfScale settings.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                switch action.style{
+                    case .default:
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    
+                    case .cancel:
+                    print("cancel")
+                    
+                    default:
+                    print("cancel")
+                    
+                }
+            })) // alert.addAction
+            
+           self.present(alert, animated: true, completion: nil)
+
+        }
+        
+    } else {
+        NSLog("registerDefaultsFromSettingsBundle: Could not find Settings.bundle")
+    }
+}
     
     // number of rows in table view
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

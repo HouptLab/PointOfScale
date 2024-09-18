@@ -145,7 +145,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         subjectsCollection.register(UINib(nibName: "SubjectCollectionViewCell", bundle: nil), //.main 
                                     forCellWithReuseIdentifier: "subjectCell")
         
-        connectToFirebase()
+        
         
         // TODO: respond to notification to getSubjectsFromFirebase?
         // getSubjectsFromFirebase()
@@ -158,20 +158,19 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
     } // viewDidLoad
     
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        connectToFirebase()
+        
+    }
+    
     @objc func updateWidth(_ sender: UISegmentedControl?) {
         
         subjectsCollection.collectionViewLayout.invalidateLayout()
         
     }
-    //
-    //    @objc func update(){
-    //        //don't call anyhting that will cuase a stack overflow
-    //        //check if connected
-    //        //get weight
-    //        //apply weight to label
-    //    }
-    
-    
+     
     func resetWeights() {
         currentWeight = (value:kMissingWeightValue,stability:false)
         previousWeight = (value:kMissingWeightValue,stability:false)
@@ -579,26 +578,92 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
              ||
              ( 0 == firebaseEmail?.count || 0 == firebasePassword?.count || 0 == firebaseURL?.count)) {
             
-            // TODO: post alert that we need an url, email and password
+            // post alert that we need an url, email and password
+            let message =  "One or more fields (i.e. Firebase url, email, or password) may not be set correctly in the PointOfScale settings."
+            
+            let alert = UIAlertController(title: "Problem Logging into Firebase", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                switch action.style{
+                case .default:
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                    
+                case .cancel:
+                    print("cancel")
+                    
+                default:
+                    print("cancel")
+                    
+                }
+            })) // alert.addAction
+            
+            self.present(alert, animated: true, completion: nil)
+            
+            return;
             
         }
         
         
         Auth.auth().signIn(withEmail: firebaseEmail!, password: firebasePassword!) { [weak self] authResult, error in
             
-            // TODO: handle error
-            guard let strongSelf = self else { return }
-            // ...
+            if (nil != error) {
+                
+                // codes
+                // AuthErrorCodeOperationNotAllowed
+                // AuthErrorCodeUserDisabled
+                // AuthErrorCodeWrongPassword
+                // AuthErrorCodeInvalidEmail
+                
+                let message = "Error: " + error!.localizedDescription
+                + " One or more fields (i.e. Firebase url, email, or password) may not be set correctly in the PointOfScale settings."
+                
+                let alert = UIAlertController(title: "Problem Logging into Firebase", message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                    switch action.style{
+                    case .default:
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                        
+                    case .cancel:
+                        print("cancel")
+                        
+                    default:
+                        print("cancel")
+                        
+                    }
+                })) // alert.addAction
+                
+                self?.present(alert, animated: true, completion: nil)
+                
+                return;
+                
+            }
             
-            self?.fbRef = Database.database(url: firebaseURL! ).reference()
-            
-            // TODO: handle error -- PUT IN TRY / CATCH?
-            
-            print("firebase")
-            
-            // TODO: Post notification that connect worked? or just call get subjects now...
-            
-            self?.getSubjectsFromFirebase()
+            else {
+                // TODO: handle if self is nil
+                guard let strongSelf = self else { 
+                    
+                    
+                    
+                    
+                    return 
+                    
+                }
+                // ...
+                
+                self?.fbRef = Database.database(url: firebaseURL! ).reference()
+                
+                // TODO: handle error -- PUT IN TRY / CATCH?
+                
+                print("firebase")
+                
+                // TODO: Post notification that connect worked? or just call get subjects now...
+                
+                self?.getSubjectsFromFirebase()
+                
+            } // error is nil
             
         } // sign in
     }
@@ -941,7 +1006,7 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         
         // finalize means and sem
         for index in groups.indices {
-                
+            
             if (0 == groups[index].n) {
                 groups[index].mean = kMissingWeightValue
                 groups[index].sem  = 0
@@ -1042,16 +1107,13 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             
             updateMeasures();
             
-            
             for theSubject in subjects {
                 print("\(theSubject.id) \(theSubject.weight)" )
                 saveSubjectToFirebase(theSubject:theSubject, timeStamp:timeStamp)
             }
             updateGroupMeans(timeStamp:timeStamp);
             
-            
             let updatedFormatter = DateFormatter()
-            
             
             updatedFormatter.dateFormat = "E yyyy-MM-dd HH:mm"   
             
@@ -1064,7 +1126,40 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
             let lastUpdatedMSPath = "expts/" + exptCodeLabel.text! + "/last_updated_ms"
             fbRef.child(lastUpdatedMSPath).setValue(lastUpdatedMs)
             
+            // TODO: save data to a local file
+            // TODO: provide interface to access or email local file to recover local data
+           
+            
         }
     }
     
+     /*
+             func writeJson() {
+                 let filePath = self.getDocumentsDirectoryUrl().appendingPathComponent(fileName)
+                 print(filePath)
+                 
+                 do {
+                     let jsonData = try JSONEncoder().encode(posts)
+                     print(jsonData)
+                     try jsonData.write(to: filePath)
+                     } catch {
+                        print("Error writing to JSON file: \(error)")
+                     }
+             } // writeJson
+             
+             func readFromJson() {
+             
+                let filePath = self.getDocumentsDirectoryUrl().appendingPathComponent(fileName)
+                print(filePath)
+             
+                do {
+                    let jsonData = try JSONDecoder().decode(posts) {
+                        print(jsonData)
+                    } catch {
+                        print("Error reading from JSON file: \(error)")
+                    }
+                }
+             } // readFromJson
+             */
+             
 } // ViewController
