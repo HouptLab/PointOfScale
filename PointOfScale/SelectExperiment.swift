@@ -96,7 +96,8 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
   
       super.viewDidAppear(animated);
   
-            setDefaultsFromSettingsBundle()
+        // TODO: do we need to set preferences from bundle? it doesn't seem to work anyway
+        // setDefaultsFromSettingsBundle()
   }
     
     func setDefaultsFromSettingsBundle() {
@@ -188,13 +189,39 @@ class SelectExperiment : UIViewController, UITableViewDelegate, UITableViewDataS
         let firebasePassword = UserDefaults.standard.value(forKey: "FirebasePassword")  as? String
         let firebaseURL = UserDefaults.standard.value(forKey: "FirebaseURL")  as? String
         
+        print("firebaseEmail: ",firebaseEmail," firebasePassword: ",firebasePassword, " firebaseURL: ",firebaseURL);
+        
         // TODO: check that firebase url has https:// in front of it
         
         if ( (nil == firebaseEmail || nil == firebasePassword || nil == firebaseURL) 
              ||
              ( 0 == firebaseEmail?.count || 0 == firebasePassword?.count || 0 == firebaseURL?.count)) {
             
-            // TODO: post alert that we need an url, email and password
+            // post alert that we need an url, email and password
+            // post alert that we need an url, email and password
+            let message =  "One or more fields (i.e. Firebase url, email, or password) may not be set correctly in the PointOfScale settings."
+            
+            let alert = UIAlertController(title: "Problem Logging into Firebase", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                switch action.style{
+                case .default:
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                    
+                case .cancel:
+                    print("cancel")
+                    
+                default:
+                    print("cancel")
+                    
+                }
+            })) // alert.addAction
+            
+            self.present(alert, animated: true, completion: nil)
+            
+            return;
+
             
         }
         

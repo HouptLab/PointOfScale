@@ -428,10 +428,11 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
                 
                 if (!weightChar!.isNotifying) {
                     print ("Weight NOT notifying")
-                    print(weightChar!)
+                    print("Weight not notifying: ",weightChar!)
                     peripheral.setNotifyValue(true, for: weightChar!)
                     
                 } else {
+                    print("Weight IS notifying: ",weightChar!)
                     currentWeight = weightFromScaleValue(value: Data(weightChar!.value ?? data))
                     tareHelper = 0 - currentWeight.value
                     
@@ -573,6 +574,9 @@ class WeightsViewController:  UIViewController,CBPeripheralDelegate,CBCentralMan
         let firebaseURL = UserDefaults.standard.value(forKey: "FirebaseURL")  as? String
         
         // TODO: check that firebase url has https:// in front of it
+        
+        print("firebaseEmail: ",firebaseEmail," firebasePassword: ",firebasePassword, " firebaseURL: ",firebaseURL);
+
         
         if ( (nil == firebaseEmail || nil == firebasePassword || nil == firebaseURL) 
              ||
