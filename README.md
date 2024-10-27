@@ -1,4 +1,6 @@
-# Description
+# PointOfScale
+
+An iPad app which collects animal weights from a Bluetooth scale, and saves the data to a Google Firebase database for integration with BarTender experiment weights.
 
 
 # Hardware Required
@@ -7,7 +9,7 @@
 
 2. a USB-C charger with cable to charge the iPad
 
-2. Etekcity Nutrition Scale model # ESN00 (Bluetooth kitchen scale)
+2. [Etekcity Nutrition Scale model # ESN00](https://www.amazon.com/Etekcity-Food-Kitchen-Scale/dp/B07FCZSC41) (Bluetooth kitchen scale)
 
 3. Stand for iPad, e.g. ["AboveTEK Elegant Tablet Stand, Aluminum iPad Stand Holder"](https://www.amazon.com/dp/B01KW7LSQK)
 
